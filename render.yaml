@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: anandamoyee-frontend
+    env: static
+    buildCommand: cd client && npm install && npm run build
+    staticPublishPath: client/dist
+    branch: main
