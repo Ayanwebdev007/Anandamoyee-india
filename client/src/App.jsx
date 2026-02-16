@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import ProductList from './pages/ProductList';
+import StickyContact from './components/StickyContact';
 
 function App() {
     return (
@@ -21,6 +22,8 @@ function App() {
                         <p>&copy; 2024 Anandamoyee India. All rights reserved.</p>
                     </div>
                 </footer>
+
+                <StickyContact />
             </div>
         </Router>
     );
