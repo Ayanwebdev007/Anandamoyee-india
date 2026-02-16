@@ -25,9 +25,9 @@ const ProductCard = ({ product }) => {
                 <div className="mt-1 flex flex-col gap-2">
                     <div className="flex items-baseline gap-2">
                         <span className="text-primary font-bold text-lg">₹{product.price}</span>
-                        <span className="text-xs text-gray-400 line-through">₹{product.originalPrice}</span>
+                        <span className="text-xs text-[#f70302] line-through">₹{product.originalPrice}</span>
                     </div>
-                    <button className="bg-primary hover:bg-yellow-400 text-black py-2 rounded-sm transition shadow-sm flex items-center justify-center gap-2 w-full text-sm font-bold active:scale-95">
+                    <button className="bg-[#0400fe] hover:bg-blue-800 text-white py-2 rounded-sm transition shadow-sm flex items-center justify-center gap-2 w-full text-sm font-bold active:scale-95">
                         <ShoppingCart className="h-4 w-4" />
                         Add to Cart
                     </button>
