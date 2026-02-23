@@ -12,15 +12,23 @@ const Setting = require('./models/Setting');
 const Customer = require('./models/Customer');
 const whatsapp = require('./whatsapp');
 
+const fs = require('fs');
+
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Ensure uploads directory exists
+const uploadDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir);
+}
+
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads', express.static(uploadDir));
 
 // Multer Storage Configuration
 const storage = multer.diskStorage({
