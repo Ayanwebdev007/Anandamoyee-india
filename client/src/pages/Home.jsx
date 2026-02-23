@@ -1,21 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
-import { Filter, ArrowUpDown, X } from 'lucide-react';
+import { Filter, ArrowUpDown, X, Loader2 } from 'lucide-react';
 
 const Home = () => {
     const [activeDropdown, setActiveDropdown] = useState(null); // 'filter', 'sort', or null
     const [visibleCount, setVisibleCount] = useState(8); // Start with 8 products
+    const [allProducts, setAllProducts] = useState([]);
+    const [categories, setCategories] = useState([]);
+    const [banners, setBanners] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    // Expanded dummy data (24 items to simulate more products)
-    const allProducts = Array.from({ length: 24 }, (_, i) => ({
-        id: i + 1,
-        name: `Heavy Duty Rice Mill Machine Model ${i + 1}00X`,
-        category: i % 3 === 0 ? "Rice Mill" : i % 3 === 1 ? "Flour Mill" : "Spares",
-        price: 15000 + (i * 500),
-        originalPrice: 18000 + (i * 500),
-        image: null
-    }));
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const [prodRes, catRes, banRes] = await Promise.all([
+                    fetch('/api/products'),
+                    fetch('/api/categories'),
+                    fetch('/api/banners')
+                ]);
+                const prods = await prodRes.json();
+                const cats = await catRes.json();
+                const bans = await banRes.json();
+
+                // Map _id to id for consistency
+                const mappedProds = prods.map(p => ({ ...p, id: p._id }));
+
+                setAllProducts(mappedProds);
+                setCategories(cats);
+                setBanners(bans);
+            } catch (err) {
+                console.error('Error fetching home data:', err);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchData();
+    }, []);
 
     const toggleDropdown = (name) => {
         setActiveDropdown(activeDropdown === name ? null : name);
@@ -24,6 +45,15 @@ const Home = () => {
     const loadMore = () => {
         setVisibleCount(prev => prev + 4);
     };
+
+    if (loading) {
+        return (
+            <div className="flex flex-col items-center justify-center min-h-[60vh]">
+                <Loader2 className="w-12 h-12 text-primary animate-spin mb-4" />
+                <p className="text-gray-500 font-medium italic">Loading your catalog...</p>
+            </div>
+        );
+    }
 
     return (
         <div className="container mx-auto px-4 py-6" onClick={() => setActiveDropdown(null)}>
@@ -37,13 +67,17 @@ const Home = () => {
                     space-between="10"
                     free-mode="true"
                 >
-                    {['Rice Mill', 'Flour Mill', 'Pulverizer', 'Chaff Cutter', 'Thresher', 'Spare Parts'].map((item, index) => (
+                    {categories.map((cat, index) => (
                         <swiper-slide key={index}>
-                            <Link to="/products" className="flex flex-col items-center">
-                                <div className="h-16 w-16 bg-white rounded-full border border-gray-200 flex items-center justify-center mb-2 shadow-sm">
-                                    <span className="text-[10px] text-gray-500">Image</span>
+                            <Link to={`/products?category=${cat.name}`} className="flex flex-col items-center">
+                                <div className="h-16 w-16 bg-white rounded-full border border-gray-200 flex items-center justify-center mb-2 shadow-sm overflow-hidden">
+                                    {cat.image ? (
+                                        <img src={cat.image} alt={cat.name} className="w-full h-full object-cover" />
+                                    ) : (
+                                        <span className="text-[10px] text-gray-500 font-bold">{cat.name.charAt(0)}</span>
+                                    )}
                                 </div>
-                                <span className="text-[10px] font-bold text-gray-800 text-center leading-tight">{item}</span>
+                                <span className="text-[10px] font-bold text-gray-800 text-center leading-tight">{cat.name}</span>
                             </Link>
                         </swiper-slide>
                     ))}
@@ -52,66 +86,140 @@ const Home = () => {
 
             {/* 2. Banners */}
             <section className="mb-10">
-                {/* Mobile View: Carousel */}
-                <div className="md:hidden">
-                    <swiper-container
-                        slides-per-view="1"
-                        speed="500"
-                        loop="true"
-                        css-mode="true"
-                        autoplay-delay="2000"
-                        autoplay-disable-on-interaction="false"
-                    >
-                        <swiper-slide>
-                            <div className="rounded-lg shadow-md overflow-hidden h-48 relative bg-gray-200">
+                {banners.length > 0 ? (
+                    <>
+                        {/* Mobile View: Carousel */}
+                        <div className="md:hidden">
+                            <swiper-container
+                                slides-per-view="1"
+                                speed="500"
+                                loop="true"
+                                css-mode="true"
+                                autoplay-delay="2000"
+                                autoplay-disable-on-interaction="false"
+                            >
+                                {banners.map((banner) => (
+                                    <swiper-slide key={banner._id}>
+                                        <div className="rounded-lg shadow-md overflow-hidden h-48 relative bg-gray-200">
+                                            {banner.link ? (
+                                                <Link to={banner.link}>
+                                                    <img
+                                                        src={banner.imageUrl}
+                                                        alt={banner.altText || banner.title}
+                                                        className="w-full h-full object-cover"
+                                                    />
+                                                </Link>
+                                            ) : (
+                                                <img
+                                                    src={banner.imageUrl}
+                                                    alt={banner.altText || banner.title}
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            )}
+                                        </div>
+                                    </swiper-slide>
+                                ))}
+                            </swiper-container>
+                        </div>
+
+                        {/* Desktop View: Grid (First 2 banners or more logic if needed) */}
+                        <div className="hidden md:grid grid-cols-2 gap-4">
+                            {banners.slice(0, 2).map((banner) => (
+                                <div key={banner._id} className="rounded-lg shadow-md overflow-hidden h-64 relative bg-gray-200 group">
+                                    {banner.link ? (
+                                        <Link to={banner.link} className="block h-full w-full">
+                                            <img
+                                                src={banner.imageUrl}
+                                                alt={banner.altText || banner.title}
+                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                            />
+                                        </Link>
+                                    ) : (
+                                        <img
+                                            src={banner.imageUrl}
+                                            alt={banner.altText || banner.title}
+                                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                        />
+                                    )}
+                                </div>
+                            ))}
+                            {/* If only 1 banner, maybe make it full width? For now keeping grid logic consistent with previous design which assumed 2 */}
+                            {banners.length === 1 && (
+                                <div className="rounded-lg shadow-md overflow-hidden h-64 relative bg-gray-100 flex items-center justify-center">
+                                    <p className="text-gray-400 font-medium">Coming Soon</p>
+                                </div>
+                            )}
+                        </div>
+                    </>
+                ) : (
+                    // Fallback/Placeholder if no banners exist
+                    <>
+                        {/* Mobile View: Carousel */}
+                        <div className="md:hidden">
+                            <swiper-container
+                                slides-per-view="1"
+                                speed="500"
+                                loop="true"
+                                css-mode="true"
+                                autoplay-delay="2000"
+                                autoplay-disable-on-interaction="false"
+                            >
+                                <swiper-slide>
+                                    <div className="rounded-lg shadow-md overflow-hidden h-48 relative bg-gray-200">
+                                        <img
+                                            src="https://placehold.co/600x400/BF1E2E/FFFFFF?text=Delivery+Banner+(Default)"
+                                            alt="Delivery Banner"
+                                            className="w-full h-full object-cover"
+                                        />
+                                    </div>
+                                </swiper-slide>
+                                <swiper-slide>
+                                    <div className="rounded-lg shadow-md overflow-hidden h-48 relative bg-gray-200">
+                                        <img
+                                            src="https://placehold.co/600x400/800080/FFFFFF?text=Product+Banner+(Default)"
+                                            alt="Product Banner"
+                                            className="w-full h-full object-cover"
+                                        />
+                                    </div>
+                                </swiper-slide>
+                            </swiper-container>
+                        </div>
+
+                        {/* Desktop View: Grid */}
+                        <div className="hidden md:grid grid-cols-2 gap-4">
+                            <div className="rounded-lg shadow-md overflow-hidden h-64 relative bg-gray-200">
                                 <img
-                                    src="https://placehold.co/600x400/BF1E2E/FFFFFF?text=Delivery+Banner+(Admin+Panel)"
+                                    src="https://placehold.co/600x400/BF1E2E/FFFFFF?text=Delivery+Banner+(Default)"
                                     alt="Delivery Banner"
                                     className="w-full h-full object-cover"
                                 />
                             </div>
-                        </swiper-slide>
-                        <swiper-slide>
-                            <div className="rounded-lg shadow-md overflow-hidden h-48 relative bg-gray-200">
+                            <div className="rounded-lg shadow-md overflow-hidden h-64 relative bg-gray-200">
                                 <img
-                                    src="https://placehold.co/600x400/800080/FFFFFF?text=Product+Banner+(Admin+Panel)"
+                                    src="https://placehold.co/600x400/800080/FFFFFF?text=Product+Banner+(Default)"
                                     alt="Product Banner"
                                     className="w-full h-full object-cover"
                                 />
                             </div>
-                        </swiper-slide>
-                    </swiper-container>
-                </div>
-
-                {/* Desktop View: Grid */}
-                <div className="hidden md:grid grid-cols-2 gap-4">
-                    <div className="rounded-lg shadow-md overflow-hidden h-64 relative bg-gray-200">
-                        <img
-                            src="https://placehold.co/600x400/BF1E2E/FFFFFF?text=Delivery+Banner+(Admin+Panel)"
-                            alt="Delivery Banner"
-                            className="w-full h-full object-cover"
-                        />
-                    </div>
-                    <div className="rounded-lg shadow-md overflow-hidden h-64 relative bg-gray-200">
-                        <img
-                            src="https://placehold.co/600x400/800080/FFFFFF?text=Product+Banner+(Admin+Panel)"
-                            alt="Product Banner"
-                            className="w-full h-full object-cover"
-                        />
-                    </div>
-                </div>
+                        </div>
+                    </>
+                )}
             </section>
 
             {/* 3. Product Categories (Desktop Only) */}
-            <section className="hidden md:block">
-                <h2 className="text-2xl font-bold text-gray-800 mb-6 border-l-4 border-primary pl-3">Our Categories</h2>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                    {['Rice Mill Machines', 'Flour Mill Machines', 'Pulverizer Machines', 'Chaff Cutter Machines', 'Paddy Thresher', 'Spare Parts'].map((item, index) => (
-                        <Link to="/products" key={index} className="bg-gray-200 rounded-lg p-4 flex flex-col items-center cursor-pointer hover:shadow-lg transition group">
-                            <div className="h-24 w-full bg-white rounded mb-3 flex items-center justify-center group-hover:scale-105 transition">
-                                <span className="text-xs text-gray-500">Image</span>
+            <section className="hidden md:block mb-10">
+                <h2 className="text-2xl font-bold text-gray-800 mb-8 border-l-4 border-primary pl-3">Our Categories</h2>
+                <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-8">
+                    {categories.map((cat, index) => (
+                        <Link to={`/products?category=${cat.name}`} key={index} className="flex flex-col items-center group cursor-pointer">
+                            <div className="h-28 w-28 bg-white rounded-full border border-gray-100 flex items-center justify-center mb-4 shadow-sm overflow-hidden group-hover:shadow-md group-hover:border-primary/20 transition-all duration-300">
+                                {cat.image ? (
+                                    <img src={cat.image} alt={cat.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                ) : (
+                                    <span className="text-2xl font-bold text-primary">{cat.name.charAt(0)}</span>
+                                )}
                             </div>
-                            <h4 className="font-bold text-gray-800 text-center text-sm leading-tight">{item}</h4>
+                            <span className="text-sm font-bold text-gray-800 text-center leading-tight group-hover:text-primary transition-colors">{cat.name}</span>
                         </Link>
                     ))}
                 </div>
@@ -141,9 +249,10 @@ const Home = () => {
                                         <X size={14} className="cursor-pointer" onClick={() => setActiveDropdown(null)} />
                                     </div>
                                     <ul className="space-y-1">
-                                        {['All Categories', 'Rice Mill', 'Flour Mill', 'Spares', 'Motors'].map((cat) => (
-                                            <li key={cat} className="px-2 py-1.5 hover:bg-yellow-50 rounded cursor-pointer text-sm text-gray-700">
-                                                {cat}
+                                        <li className="px-2 py-1.5 hover:bg-yellow-50 rounded cursor-pointer text-sm text-gray-700">All Categories</li>
+                                        {categories.map((cat) => (
+                                            <li key={cat._id} className="px-2 py-1.5 hover:bg-yellow-50 rounded cursor-pointer text-sm text-gray-700">
+                                                {cat.name}
                                             </li>
                                         ))}
                                     </ul>

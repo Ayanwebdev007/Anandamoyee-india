@@ -1,7 +1,35 @@
 services:
+  # 1. Backend Service (Node.js)
+  - type: web
+    name: anandamoyee-backend
+    env: node
+    plan: free # Change to 'starter' if you need more resources
+    buildCommand: cd server && npm install
+    startCommand: cd server && node server.js
+    envVars:
+      - key: NODE_VERSION
+        value: 18
+      - key: MONGODB_URI
+        sync: false # Set this in Render Dashboard
+    branch: main
+
+  # 2. Frontend Service (Static Site)
   - type: web
     name: anandamoyee-frontend
     env: static
     buildCommand: cd client && npm install && npm run build
     staticPublishPath: client/dist
     branch: main
+    routes:
+      # Proxy API calls to backend
+      - type: rewrite
+        source: /api/*
+        destination: https://anandamoyee-backend.onrender.com/api/*
+      # Proxy uploads to backend (for local storage)
+      - type: rewrite
+        source: /uploads/*
+        destination: https://anandamoyee-backend.onrender.com/uploads/*
+      # Fallback for Single Page App routing
+      - type: rewrite
+        source: /*
+        destination: /index.html
