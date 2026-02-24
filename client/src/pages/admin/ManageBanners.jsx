@@ -19,23 +19,26 @@ const ManageBanners = () => {
         if (!file) return;
 
         setUploading(true);
-        const data = new FormData();
-        data.append('image', file);
-
-        try {
-            const res = await fetch('/api/upload', {
-                method: 'POST',
-                body: data
-            });
-            const result = await res.json();
-            if (res.ok) {
-                setFormData(prev => ({ ...prev, imageUrl: result.imageUrl }));
+        const reader = new FileReader();
+        reader.onloadend = async () => {
+            const base64String = reader.result;
+            try {
+                const res = await fetch('/api/upload', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ image: base64String })
+                });
+                const result = await res.json();
+                if (res.ok) {
+                    setFormData(prev => ({ ...prev, imageUrl: result.imageUrl }));
+                }
+            } catch (err) {
+                console.error('Upload failed:', err);
+            } finally {
+                setUploading(false);
             }
-        } catch (err) {
-            console.error('Upload failed:', err);
-        } finally {
-            setUploading(false);
-        }
+        };
+        reader.readAsDataURL(file);
     };
 
     const fetchBanners = async () => {
