@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Package, Tags, ArrowLeft, LogOut, Image as ImageIcon, ShoppingCart, Settings } from 'lucide-react';
+import { LayoutDashboard, Package, Tags, ArrowLeft, LogOut, Image as ImageIcon, ShoppingCart, Settings, MessageSquare } from 'lucide-react';
 import logo from '../../assets/logo.png';
 
 const AdminLayout = () => {
@@ -13,6 +13,7 @@ const AdminLayout = () => {
         { path: '/admin/banners', label: 'Banners', icon: ImageIcon },
         { path: '/admin/orders', label: 'Orders', icon: ShoppingCart },
         { path: '/admin/whatsapp', label: 'WhatsApp', icon: Settings },
+        { path: '/admin/enquiries', label: 'Enquiries', icon: MessageSquare },
     ];
 
     return (

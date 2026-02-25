@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Search, ShoppingCart, User, Menu, Phone, Mail, X, Loader2, KeyRound, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Search, ShoppingCart, User, Menu, Phone, Mail, X, Loader2, KeyRound, CheckCircle2, AlertCircle, Award } from 'lucide-react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useProfile } from '../context/ProfileContext';
@@ -128,17 +128,17 @@ const Navbar = () => {
             {/* 1. Top Contact Bar */}
             <div className="bg-gray-100 py-1 text-center text-sm md:text-base border-b">
                 <div className="container mx-auto px-4 flex justify-center md:justify-end gap-6 text-gray-800 font-medium overflow-x-auto scrollbar-hide">
-                    <a href="tel:+917003305661" className="flex items-center gap-2 hover:text-primary transition whitespace-nowrap">
+                    <a href="tel:+919477432899" className="flex items-center gap-2 hover:text-primary transition whitespace-nowrap">
                         <Phone size={18} className="text-secondary" />
-                        <span>+91 7003305661</span>
+                        <span>+91 9477432899</span>
                     </a>
-                    <a href="https://wa.me/919876543210" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-green-600 transition whitespace-nowrap">
+                    <a href="https://wa.me/919051430698" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-green-600 transition whitespace-nowrap">
                         <img src={wpLogo} alt="WhatsApp" className="h-6 w-6 object-contain" />
-                        <span>+91 9876543210</span>
+                        <span>+91 9051430698</span>
                     </a>
-                    <a href="mailto:contact@millexindia.com" className="hidden md:flex items-center gap-2 hover:text-primary transition whitespace-nowrap">
+                    <a href="mailto:prasenjitshaw68@gmail.com" className="hidden md:flex items-center gap-2 hover:text-primary transition whitespace-nowrap">
                         <Mail size={18} className="text-secondary" />
-                        <span>contact@millexindia.com</span>
+                        <span>prasenjitshaw68@gmail.com</span>
                     </a>
                 </div>
             </div>
@@ -175,6 +175,8 @@ const Navbar = () => {
 
                         {/* Icons */}
                         <div className="flex items-center gap-4 md:gap-6">
+                            <Link to="/about" className="hidden md:block font-bold hover:text-secondary transition-colors uppercase text-sm">About Us</Link>
+                            <Link to="/contact" className="hidden md:block font-bold hover:text-secondary transition-colors uppercase text-sm">Contact Us</Link>
                             <Link to="/cart" className="relative cursor-pointer">
                                 <ShoppingCart className="h-6 w-6 md:h-7 md:w-7" />
                                 {cartCount > 0 && (
@@ -205,6 +207,79 @@ const Navbar = () => {
                             className="absolute right-3 top-2.5 h-5 w-5 text-gray-400"
                             onClick={handleSearch}
                         />
+                    </div>
+                </div>
+
+                {/* Mobile Menu - Left Drawer */}
+                <div
+                    className={`fixed inset-0 z-[100] md:hidden transition-opacity duration-300 ${isMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+                >
+                    {/* Backdrop */}
+                    <div
+                        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+                        onClick={() => setIsMenuOpen(false)}
+                    />
+
+                    {/* Drawer */}
+                    <div
+                        className={`absolute inset-y-0 left-0 w-72 bg-white shadow-2xl transform transition-transform duration-300 ease-out flex flex-col ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}
+                    >
+                        {/* Drawer Header */}
+                        <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-primary">
+                            <div className="flex items-center gap-2">
+                                <img src={logo} alt="Logo" className="h-8 w-auto" />
+                                <span className="text-lg font-bold tracking-tight">Anandamoyee</span>
+                            </div>
+                            <button
+                                onClick={() => setIsMenuOpen(false)}
+                                className="p-2 hover:bg-black/5 rounded-full transition-colors"
+                            >
+                                <X size={24} className="text-black" />
+                            </button>
+                        </div>
+
+                        {/* Navigation Links */}
+                        <nav className="p-4 flex flex-col gap-2">
+                            <Link
+                                to="/"
+                                onClick={() => setIsMenuOpen(false)}
+                                className="flex items-center gap-4 p-4 rounded-xl text-gray-800 font-bold hover:bg-primary/10 hover:text-primary transition-all group"
+                            >
+                                <div className="w-10 h-10 rounded-lg bg-gray-50 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                                    <CheckCircle2 size={20} className="text-primary" />
+                                </div>
+                                <span className="text-lg">Home</span>
+                            </Link>
+
+                            <Link
+                                to="/about"
+                                onClick={() => setIsMenuOpen(false)}
+                                className="flex items-center gap-4 p-4 rounded-xl text-gray-800 font-bold hover:bg-primary/10 hover:text-primary transition-all group"
+                            >
+                                <div className="w-10 h-10 rounded-lg bg-gray-50 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                                    <Award size={20} className="text-primary" />
+                                </div>
+                                <span className="text-lg">About Us</span>
+                            </Link>
+
+                            <Link
+                                to="/contact"
+                                onClick={() => setIsMenuOpen(false)}
+                                className="flex items-center gap-4 p-4 rounded-xl text-gray-800 font-bold hover:bg-primary/10 hover:text-primary transition-all group"
+                            >
+                                <div className="w-10 h-10 rounded-lg bg-gray-50 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                                    <Mail size={20} className="text-primary" />
+                                </div>
+                                <span className="text-lg">Contact Us</span>
+                            </Link>
+                        </nav>
+
+                        {/* Footer Info */}
+                        <div className="mt-auto p-6 border-t border-gray-100 bg-gray-50">
+                            <p className="text-xs text-gray-400 text-center uppercase tracking-widest font-semibold">
+                                Trusted by 1M+ Farmers
+                            </p>
+                        </div>
                     </div>
                 </div>
             </header>

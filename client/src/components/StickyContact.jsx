@@ -7,7 +7,7 @@ const StickyContact = () => {
         <div className="fixed bottom-4 right-4 flex flex-col gap-3 z-50">
             {/* WhatsApp Button */}
             <a
-                href="https://wa.me/919876543210"
+                href="https://wa.me/919051430698"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="bg-green-500 hover:bg-green-600 text-white p-1 rounded-full shadow-lg transition-transform hover:scale-110 flex items-center justify-center h-12 w-12 md:h-14 md:w-14"
@@ -18,7 +18,7 @@ const StickyContact = () => {
 
             {/* Call Button */}
             <a
-                href="tel:+917003305661"
+                href="tel:+919477432899"
                 className="bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-full shadow-lg transition-transform hover:scale-110 flex items-center justify-center h-12 w-12 md:h-14 md:w-14"
                 aria-label="Call Now"
             >

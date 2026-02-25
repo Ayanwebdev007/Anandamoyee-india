@@ -16,6 +16,10 @@ import ManageCategories from './pages/admin/ManageCategories';
 import ManageBanners from './pages/admin/ManageBanners';
 import ManageOrders from './pages/admin/ManageOrders';
 import WhatsAppSettings from './pages/admin/WhatsAppSettings';
+import AboutUs from './pages/AboutUs';
+import ContactUs from './pages/ContactUs';
+import ManageEnquiries from './pages/admin/ManageEnquiries';
+import Footer from './components/Footer';
 
 function App() {
     return (
@@ -30,6 +34,8 @@ function App() {
                             <Route path="/product/:id" element={<><Navbar /><ProductDetails /></>} />
                             <Route path="/cart" element={<><Navbar /><Cart /></>} />
                             <Route path="/profile" element={<><Navbar /><Profile /></>} />
+                            <Route path="/about" element={<><Navbar /><AboutUs /></>} />
+                            <Route path="/contact" element={<><Navbar /><ContactUs /></>} />
 
                             {/* Admin Routes without main Navbar */}
                             <Route path="/admin" element={<AdminLayout />}>
@@ -39,15 +45,11 @@ function App() {
                                 <Route path="banners" element={<ManageBanners />} />
                                 <Route path="orders" element={<ManageOrders />} />
                                 <Route path="whatsapp" element={<WhatsAppSettings />} />
+                                <Route path="enquiries" element={<ManageEnquiries />} />
                             </Route>
                         </Routes>
 
-                        {/* Simple Footer Placeholder */}
-                        <footer className="bg-gray-900 text-white py-8 mt-12">
-                            <div className="container mx-auto px-4 text-center">
-                                <p>&copy; 2024 Anandamoyee India. All rights reserved.</p>
-                            </div>
-                        </footer>
+                        <Footer />
 
                         <StickyContact />
                     </div>

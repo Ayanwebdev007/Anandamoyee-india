@@ -10,6 +10,7 @@ const Banner = require('./models/Banner');
 const Order = require('./models/Order');
 const Setting = require('./models/Setting');
 const Customer = require('./models/Customer');
+const Enquiry = require('./models/Enquiry');
 const whatsapp = require('./whatsapp');
 
 const fs = require('fs');
@@ -582,6 +583,66 @@ app.delete('/api/orders/:id', async (req, res) => {
     try {
         await Order.findByIdAndDelete(req.params.id);
         res.json({ message: 'Order deleted' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+
+// --- ENQUIRY ROUTES ---
+
+// Create a new enquiry (Public)
+app.post('/api/enquiries', async (req, res) => {
+    try {
+        const enquiry = new Enquiry(req.body);
+        const savedEnquiry = await enquiry.save();
+
+        // Notify owner via WhatsApp
+        const ownerPhone = await Setting.get('owner_phone') || '';
+        if (ownerPhone) {
+            const ownerMessage = `📞 *New Enquiry Received!*\n\n` +
+                `👤 *Name:* ${req.body.name}\n` +
+                `📱 *Phone:* ${req.body.phone}\n` +
+                `💬 *Message:* ${req.body.message || 'No message'}\n` +
+                `📅 *Date:* ${new Date().toLocaleString('en-IN')}`;
+            await whatsapp.sendMessage(ownerPhone, ownerMessage);
+        }
+
+        res.status(201).json({ message: 'Enquiry submitted successfully', enquiry: savedEnquiry });
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+});
+
+// Get all enquiries (Admin)
+app.get('/api/enquiries', async (req, res) => {
+    try {
+        const enquiries = await Enquiry.find().sort({ createdAt: -1 });
+        res.json(enquiries);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// Update enquiry status (Admin)
+app.put('/api/enquiries/:id', async (req, res) => {
+    try {
+        const enquiry = await Enquiry.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            { new: true }
+        );
+        res.json(enquiry);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+});
+
+// Delete an enquiry (Admin)
+app.delete('/api/enquiries/:id', async (req, res) => {
+    try {
+        await Enquiry.findByIdAndDelete(req.params.id);
+        res.json({ message: 'Enquiry deleted' });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
