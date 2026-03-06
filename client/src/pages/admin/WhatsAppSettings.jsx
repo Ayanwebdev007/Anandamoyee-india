@@ -86,7 +86,7 @@ const WhatsAppSettings = () => {
     }
 
     return (
-        <div className="max-w-2xl mx-auto">
+        <div className="max-w-2xl mx-auto px-4 sm:px-0">
             <div className="mb-8">
                 <h1 className="text-2xl font-bold text-gray-800">WhatsApp Settings</h1>
                 <p className="text-gray-500 text-sm">Configure your NextSMS WhatsApp API for order notifications.</p>
@@ -95,14 +95,14 @@ const WhatsAppSettings = () => {
             {/* Result Message */}
             {result && (
                 <div className={`mb-6 rounded-xl p-4 flex items-start gap-3 border ${result.type === 'success'
-                    ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'
+                    ? 'bg-yellow-50 border-yellow-200' : 'bg-red-50 border-red-200'
                     }`}>
                     {result.type === 'success' ? (
-                        <CheckCircle2 size={20} className="text-green-600 mt-0.5 flex-shrink-0" />
+                        <CheckCircle2 size={20} className="text-yellow-600 mt-0.5 flex-shrink-0" />
                     ) : (
                         <AlertCircle size={20} className="text-red-600 mt-0.5 flex-shrink-0" />
                     )}
-                    <p className={`text-sm font-medium ${result.type === 'success' ? 'text-green-800' : 'text-red-800'}`}>
+                    <p className={`text-sm font-medium ${result.type === 'success' ? 'text-yellow-800' : 'text-red-800'}`}>
                         {result.message}
                     </p>
                 </div>
@@ -117,7 +117,7 @@ const WhatsAppSettings = () => {
                     </div>
                 </div>
 
-                <div className="p-6 space-y-5">
+                <div className="p-4 sm:p-6 space-y-5">
                     {/* API Token */}
                     <div>
                         <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -139,8 +139,8 @@ const WhatsAppSettings = () => {
                                 {showToken ? <EyeOff size={18} /> : <Eye size={18} />}
                             </button>
                         </div>
-                        <p className="text-xs text-gray-500 mt-1.5">
-                            Get this from <a href="https://nextsms.co.in" target="_blank" rel="noopener" className="text-blue-600 hover:underline">nextsms.co.in</a> → Your Dashboard → API Token
+                        <p className="text-[10px] sm:text-xs text-gray-500 mt-1.5">
+                            Get this from <a href="https://nextsms.co.in" target="_blank" rel="noopener" className="text-blue-600 hover:underline">nextsms.co.in</a> → Dashboard
                         </p>
                     </div>
 
@@ -150,7 +150,7 @@ const WhatsAppSettings = () => {
                             Owner WhatsApp Number
                         </label>
                         <div className="flex items-center border border-gray-300 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-blue-500/20 focus-within:border-blue-500 transition-all">
-                            <span className="px-4 py-3 bg-gray-50 text-gray-500 font-medium text-sm border-r border-gray-300">+91</span>
+                            <span className="px-3 sm:px-4 py-3 bg-gray-50 text-gray-500 font-medium text-sm border-r border-gray-300">+91</span>
                             <input
                                 type="tel"
                                 value={ownerPhone.replace(/^91/, '')}
@@ -160,19 +160,19 @@ const WhatsAppSettings = () => {
                                 className="flex-1 px-4 py-3 outline-none text-gray-800"
                             />
                         </div>
-                        <p className="text-xs text-gray-500 mt-1.5">You'll receive new order notifications on this number.</p>
+                        <p className="text-[10px] sm:text-xs text-gray-500 mt-1.5">You'll receive new order notifications here.</p>
                     </div>
 
                     {/* Save Button */}
                     <button
-                        type="submit"
+                        onClick={handleSave}
                         disabled={saving}
-                        className="w-full bg-[#0400fe] text-white py-3 rounded-xl font-bold hover:bg-blue-800 transition-colors shadow-lg shadow-blue-200/50 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+                        className="w-full flex items-center justify-center gap-2 bg-brand-blue text-white py-4 rounded-2xl font-black uppercase tracking-widest hover:bg-primary hover:text-brand-blue transition-all duration-300 shadow-xl shadow-blue-900/10 active:scale-[0.98]"
                     >
                         {saving ? (
                             <><Loader2 className="animate-spin" size={18} /> Saving...</>
                         ) : (
-                            <><Save size={18} /> Save Settings</>
+                            <><Save size={18} /> Save Config</>
                         )}
                     </button>
                 </div>
@@ -187,16 +187,16 @@ const WhatsAppSettings = () => {
                     </div>
                 </div>
 
-                <div className="p-6">
-                    <p className="text-sm text-gray-600 mb-4">Send a test message to verify your API connection is working.</p>
-                    <div className="flex gap-3">
+                <div className="p-4 sm:p-6">
+                    <p className="text-sm text-gray-600 mb-4">Send a test message to verify your API connection.</p>
+                    <div className="flex flex-col sm:flex-row gap-3">
                         <div className="flex-1 flex items-center border border-gray-300 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-blue-500/20 focus-within:border-blue-500 transition-all">
                             <span className="px-3 py-2.5 bg-gray-50 text-gray-500 font-medium text-sm border-r border-gray-300">+91</span>
                             <input
                                 type="tel"
                                 value={testPhone}
                                 onChange={(e) => setTestPhone(e.target.value.replace(/[^\d]/g, ''))}
-                                placeholder="Enter number to test"
+                                placeholder="Enter number"
                                 maxLength={10}
                                 className="flex-1 px-3 py-2.5 outline-none text-gray-800 text-sm"
                             />
@@ -205,7 +205,7 @@ const WhatsAppSettings = () => {
                             type="button"
                             onClick={handleTest}
                             disabled={testing || !testPhone.trim()}
-                            className="px-5 py-2.5 bg-green-600 text-white rounded-xl font-medium hover:bg-green-700 transition-colors flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed text-sm whitespace-nowrap"
+                            className="w-full sm:w-auto px-5 py-2.5 bg-yellow-600 text-white rounded-xl font-medium hover:bg-yellow-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed text-sm whitespace-nowrap"
                         >
                             {testing ? (
                                 <><Loader2 className="animate-spin" size={16} /> Sending...</>
@@ -216,6 +216,7 @@ const WhatsAppSettings = () => {
                     </div>
                 </div>
             </div>
+
 
             {/* Info Box */}
             <div className="mt-6 bg-blue-50 border border-blue-100 rounded-xl p-4">

@@ -194,7 +194,7 @@ const Profile = () => {
                             <div key={order._id} className="p-4 md:p-5 hover:bg-gray-50/50 transition-colors">
                                 <div className="flex justify-between items-start mb-2">
                                     <span className="text-xs font-mono text-gray-400">#{order._id.slice(-6)}</span>
-                                    <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${order.status === 'Delivered' ? 'bg-green-100 text-green-700' :
+                                    <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${order.status === 'Delivered' ? 'bg-yellow-100 text-yellow-700' :
                                             order.status === 'Cancelled' ? 'bg-red-100 text-red-700' :
                                                 'bg-yellow-100 text-yellow-700'
                                         }`}>
@@ -289,7 +289,7 @@ const Profile = () => {
 
                             {changeStep === 'done' && (
                                 <div className="text-center py-4">
-                                    <CheckCircle2 size={48} className="text-green-600 mx-auto mb-3" />
+                                    <CheckCircle2 size={48} className="text-yellow-600 mx-auto mb-3" />
                                     <p className="text-lg font-bold text-gray-900">Number Updated!</p>
                                 </div>
                             )}

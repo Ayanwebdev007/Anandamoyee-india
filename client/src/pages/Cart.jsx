@@ -267,14 +267,14 @@ const Cart = () => {
                             {/* LOGGED IN — Direct confirm */}
                             {step === 'confirm' && (
                                 <div>
-                                    <div className="flex items-center justify-between bg-green-50 border border-green-200 rounded-lg px-4 py-3 mb-5">
+                                    <div className="flex items-center justify-between bg-yellow-50 border border-yellow-200 rounded-lg px-4 py-3 mb-5">
                                         <div>
-                                            <p className="text-xs text-green-600 font-medium">Ordering as</p>
-                                            <p className="text-lg font-bold text-green-800">+91 {displayPhone}</p>
+                                            <p className="text-xs text-yellow-600 font-medium">Ordering as</p>
+                                            <p className="text-lg font-bold text-yellow-800">+91 {displayPhone}</p>
                                         </div>
                                         <button
                                             onClick={() => { setWantsChangeNumber(true); setStep('phone'); }}
-                                            className="text-xs text-green-700 hover:text-green-900 font-medium flex items-center gap-1"
+                                            className="text-xs text-yellow-700 hover:text-yellow-900 font-medium flex items-center gap-1"
                                         >
                                             <Edit3 size={12} /> Change
                                         </button>
@@ -333,9 +333,9 @@ const Cart = () => {
                             {/* STEP: Order (after OTP verified for guest) */}
                             {step === 'order' && (
                                 <div>
-                                    <div className="flex items-center gap-2 bg-green-50 border border-green-200 rounded-lg px-3 py-2 mb-5">
-                                        <CheckCircle2 size={16} className="text-green-600" />
-                                        <span className="text-sm font-medium text-green-700">+91 {phone} verified</span>
+                                    <div className="flex items-center gap-2 bg-yellow-50 border border-yellow-200 rounded-lg px-3 py-2 mb-5">
+                                        <CheckCircle2 size={16} className="text-yellow-600" />
+                                        <span className="text-sm font-medium text-yellow-700">+91 {phone} verified</span>
                                     </div>
                                     <button onClick={handlePlaceOrder} disabled={orderLoading}
                                         className="w-full bg-[#0400fe] text-white py-3.5 rounded-xl font-bold hover:bg-blue-800 transition-colors shadow-lg shadow-blue-200/50 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed">
@@ -347,8 +347,8 @@ const Cart = () => {
                             {/* SUCCESS */}
                             {step === 'success' && (
                                 <div className="text-center py-6">
-                                    <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                        <CheckCircle2 size={36} className="text-green-600" />
+                                    <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <CheckCircle2 size={36} className="text-yellow-600" />
                                     </div>
                                     <h3 className="text-lg font-bold text-gray-900 mb-2">Order Placed Successfully!</h3>
                                     <p className="text-gray-600 text-sm mb-6">{orderResult?.message}</p>

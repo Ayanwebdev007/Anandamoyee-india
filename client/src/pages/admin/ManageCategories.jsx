@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Trash2, Edit, Plus, Loader2, X, Image as ImageIcon } from 'lucide-react';
+import { uploadToImgBB } from '../../utils/imageUpload';
 
 const ManageCategories = () => {
     const [categories, setCategories] = useState([]);
@@ -19,28 +20,18 @@ const ManageCategories = () => {
         if (type === 'image') setUploading(true);
         else setBannerUploading(true);
 
-        const reader = new FileReader();
-        reader.onloadend = async () => {
-            const base64String = reader.result;
-            try {
-                const res = await fetch('/api/upload', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ image: base64String })
-                });
-                const result = await res.json();
-                if (res.ok) {
-                    if (type === 'image') setCategoryImage(result.imageUrl);
-                    else setCategoryBanner(result.imageUrl);
-                }
-            } catch (err) {
-                console.error('Upload failed:', err);
-            } finally {
-                if (type === 'image') setUploading(false);
-                else setBannerUploading(false);
+        try {
+            const url = await uploadToImgBB(file);
+            if (url) {
+                if (type === 'image') setCategoryImage(url);
+                else setCategoryBanner(url);
             }
-        };
-        reader.readAsDataURL(file);
+        } catch (err) {
+            console.error('Upload failed:', err);
+        } finally {
+            if (type === 'image') setUploading(false);
+            else setBannerUploading(false);
+        }
     };
 
     const fetchCategories = async () => {
@@ -119,14 +110,14 @@ const ManageCategories = () => {
 
     return (
         <div className="max-w-5xl mx-auto">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
                 <div>
                     <h1 className="text-2xl font-bold text-gray-800">Manage Categories</h1>
                     <p className="text-gray-500 text-sm">Organize your products into categories.</p>
                 </div>
                 <button
                     onClick={openAdd}
-                    className="bg-[#0400fe] text-white px-6 py-2.5 rounded-lg font-medium hover:bg-[#FFD700] hover:text-[#0400fe] transition-colors duration-300 flex items-center gap-2 shadow-md shadow-blue-200/50"
+                    className="w-full sm:w-auto bg-brand-blue text-white px-6 py-3 rounded-xl font-bold hover:bg-primary hover:text-brand-blue transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-blue-200"
                 >
                     <Plus size={20} />
                     Add Category
@@ -148,57 +139,60 @@ const ManageCategories = () => {
                         <p className="text-gray-500">Create your first category to get started.</p>
                     </div>
                 ) : (
-                    <table className="w-full text-left">
-                        <thead className="bg-gray-50 border-b border-gray-100">
-                            <tr>
-                                <th className="px-6 py-4 font-semibold text-gray-600 text-sm uppercase tracking-wider">Category Name</th>
-                                <th className="px-6 py-4 font-semibold text-gray-600 text-sm uppercase tracking-wider">Image</th>
-                                <th className="px-6 py-4 font-semibold text-gray-600 text-sm uppercase tracking-wider text-right">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-100">
-                            {categories.map((category) => (
-                                <tr key={category._id} className="hover:bg-gray-50/50 transition-colors">
-                                    <td className="px-6 py-4 font-medium text-gray-800">{category.name}</td>
-                                    <td className="px-6 py-4">
-                                        <div className="w-12 h-12 rounded-lg bg-gray-50 border border-gray-200 overflow-hidden flex items-center justify-center">
-                                            {category.image ? (
-                                                <img src={category.image} alt={category.name} className="w-full h-full object-cover" />
-                                            ) : (
-                                                <ImageIcon size={18} className="text-gray-300" />
-                                            )}
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4 text-right">
-                                        <div className="flex items-center justify-end gap-2">
-                                            <button onClick={() => openEdit(category)} className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Edit">
-                                                <Edit size={18} />
-                                            </button>
-                                            <button onClick={() => handleDelete(category._id)} className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Delete">
-                                                <Trash2 size={18} />
-                                            </button>
-                                        </div>
-                                    </td>
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-left min-w-[500px]">
+                            <thead className="bg-gray-50/50 border-b border-gray-100">
+                                <tr>
+                                    <th className="px-6 py-4 font-black text-gray-400 text-[10px] uppercase tracking-widest">Category Name</th>
+                                    <th className="px-6 py-4 font-black text-gray-400 text-[10px] uppercase tracking-widest">Visual</th>
+                                    <th className="px-6 py-4 font-black text-gray-400 text-[10px] uppercase tracking-widest text-right">Actions</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody className="divide-y divide-gray-100">
+                                {categories.map((category) => (
+                                    <tr key={category._id} className="hover:bg-gray-50/50 transition-colors">
+                                        <td className="px-6 py-4 font-medium text-gray-800 text-sm sm:text-base">{category.name}</td>
+                                        <td className="px-6 py-4">
+                                            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-gray-50 border border-gray-200 overflow-hidden flex items-center justify-center">
+                                                {category.image ? (
+                                                    <img src={category.image} alt={category.name} className="w-full h-full object-cover" />
+                                                ) : (
+                                                    <ImageIcon size={18} className="text-gray-300" />
+                                                )}
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 text-right">
+                                            <div className="flex items-center justify-end gap-1 sm:gap-2">
+                                                <button onClick={() => openEdit(category)} className="p-1.5 sm:p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Edit">
+                                                    <Edit size={18} />
+                                                </button>
+                                                <button onClick={() => handleDelete(category._id)} className="p-1.5 sm:p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Delete">
+                                                    <Trash2 size={18} />
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 )}
             </div>
 
             {/* Modal */}
             {showModal && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
                     <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowModal(false)} />
-                    <div className="bg-white rounded-2xl w-full max-w-md relative z-10 shadow-2xl flex flex-col">
-                        <div className="flex justify-between items-center p-6 border-b border-gray-100">
+                    <div className="bg-white rounded-t-2xl sm:rounded-2xl w-full max-w-md relative z-10 shadow-2xl flex flex-col max-h-[95vh] sm:max-h-[90vh] overflow-hidden">
+                        <div className="flex justify-between items-center p-4 sm:p-6 border-b border-gray-100">
                             <h2 className="text-xl font-bold text-gray-800">{editingCategory ? 'Edit Category' : 'Add New Category'}</h2>
-                            <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-600 transition-colors">
+                            <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-600 transition-colors p-2">
                                 <X size={24} />
                             </button>
                         </div>
 
-                        <div className="p-6">
+                        <div className="p-4 sm:p-6 overflow-y-auto">
+
                             <form onSubmit={handleSubmit} className="space-y-6">
                                 <div>
                                     <label className="block text-sm font-semibold text-gray-700 mb-2">Category Name</label>
@@ -272,7 +266,7 @@ const ManageCategories = () => {
                                     </div>
                                 </div>
 
-                                <button type="submit" className="w-full bg-[#0400fe] text-white py-3 rounded-xl font-bold hover:bg-[#FFD700] hover:text-[#0400fe] transition-colors duration-300 shadow-lg shadow-blue-900/20 active:scale-[0.99] transform">
+                                <button type="submit" className="w-full bg-brand-blue text-white py-4 rounded-2xl font-black uppercase tracking-widest hover:bg-primary hover:text-brand-blue transition-all duration-300 shadow-xl shadow-blue-900/10 active:scale-[0.98]">
                                     {editingCategory ? 'Update Category' : 'Add Category'}
                                 </button>
                             </form>

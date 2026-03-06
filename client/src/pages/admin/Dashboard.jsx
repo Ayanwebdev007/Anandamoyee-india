@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Package, Tags, TrendingUp, Users, ArrowUpRight } from 'lucide-react';
 
 const Dashboard = () => {
@@ -44,37 +45,37 @@ const Dashboard = () => {
             title: 'Total Products',
             value: stats.products,
             icon: Package,
-            color: 'bg-blue-500',
-            textColor: 'text-blue-500',
+            color: 'text-brand-blue',
             bgColor: 'bg-blue-50',
-            trend: 'In catalog'
+            borderColor: 'border-t-brand-blue',
+            trend: 'In Stock'
         },
         {
             title: 'Total Categories',
             value: stats.categories,
             icon: Tags,
-            color: 'bg-emerald-500',
-            textColor: 'text-emerald-500',
-            bgColor: 'bg-emerald-50',
-            trend: 'Active categories'
+            color: 'text-primary',
+            bgColor: 'bg-yellow-50',
+            borderColor: 'border-t-primary',
+            trend: 'Organized'
         },
         {
-            title: 'Monthly Visitors',
-            value: '2.4k', // Placeholder as we don't have analytics yet
-            icon: Users,
-            color: 'bg-purple-500',
-            textColor: 'text-purple-500',
-            bgColor: 'bg-purple-50',
-            trend: 'Estimated'
-        },
-        {
-            title: 'Inventory Value', // Changed from Total Sales
+            title: 'Inventory Value',
             value: `₹${stats.totalValue.toLocaleString()}`,
             icon: TrendingUp,
-            color: 'bg-orange-500',
-            textColor: 'text-orange-500',
-            bgColor: 'bg-orange-50',
-            trend: 'Total asset value'
+            color: 'text-emerald-600',
+            bgColor: 'bg-emerald-50',
+            borderColor: 'border-t-emerald-500',
+            trend: 'Total MRP'
+        },
+        {
+            title: 'Recent Activity',
+            value: stats.recentProducts.length,
+            icon: ArrowUpRight,
+            color: 'text-brand-red',
+            bgColor: 'bg-red-50',
+            borderColor: 'border-t-brand-red',
+            trend: 'Last Added'
         }
     ];
 
@@ -89,18 +90,18 @@ const Dashboard = () => {
                 {statCards.map((stat, index) => {
                     const Icon = stat.icon;
                     return (
-                        <div key={index} className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+                        <div key={index} className={`bg-white p-6 rounded-2xl border-t-4 ${stat.borderColor} shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group`}>
                             <div className="flex justify-between items-start mb-4">
-                                <div className={`p-3 rounded-lg ${stat.bgColor} ${stat.textColor}`}>
-                                    <Icon size={22} />
+                                <div className={`p-3 rounded-xl ${stat.bgColor} ${stat.color} group-hover:scale-110 transition-transform`}>
+                                    <Icon size={24} />
                                 </div>
-                                <span className="flex items-center text-xs font-medium text-gray-500 bg-gray-50 px-2 py-1 rounded-full">
+                                <span className="flex items-center text-[10px] font-black uppercase tracking-widest text-gray-400 bg-gray-50 px-2.5 py-1 rounded-lg">
                                     {stat.trend}
                                 </span>
                             </div>
                             <div>
-                                <p className="text-sm font-medium text-gray-500">{stat.title}</p>
-                                <h3 className="text-2xl font-bold text-gray-800 mt-1">{stat.value}</h3>
+                                <p className="text-sm font-bold text-gray-400 uppercase tracking-tighter">{stat.title}</p>
+                                <h3 className="text-3xl font-black text-gray-900 mt-1">{stat.value}</h3>
                             </div>
                         </div>
                     );
@@ -136,17 +137,22 @@ const Dashboard = () => {
 
                 <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
                     <h3 className="text-lg font-bold text-gray-800 mb-4">Quick Actions</h3>
-                    <div className="grid grid-cols-2 gap-4">
-                        <button className="p-4 rounded-lg border border-dashed border-gray-300 text-gray-500 hover:border-brand-blue hover:text-brand-blue hover:bg-blue-50 transition-all text-sm font-medium flex flex-col items-center gap-2">
-                            <Package size={20} />
-                            Add New Product
-                        </button>
-                        <button className="p-4 rounded-lg border border-dashed border-gray-300 text-gray-500 hover:border-brand-blue hover:text-brand-blue hover:bg-blue-50 transition-all text-sm font-medium flex flex-col items-center gap-2">
-                            <Tags size={20} />
-                            Add New Category
-                        </button>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <Link to="/admin/products" className="p-6 rounded-2xl bg-gray-50 border-2 border-dashed border-gray-200 text-gray-500 hover:border-brand-blue hover:text-brand-blue hover:bg-blue-50/50 hover:shadow-inner transition-all group flex flex-col items-center gap-3">
+                            <div className="p-3 bg-white rounded-xl shadow-sm group-hover:scale-110 transition-transform">
+                                <Package size={24} />
+                            </div>
+                            <span className="font-bold text-sm tracking-tight">Add New Product</span>
+                        </Link>
+                        <Link to="/admin/categories" className="p-6 rounded-2xl bg-gray-50 border-2 border-dashed border-gray-200 text-gray-500 hover:border-primary hover:text-primary hover:bg-yellow-50/50 hover:shadow-inner transition-all group flex flex-col items-center gap-3">
+                            <div className="p-3 bg-white rounded-xl shadow-sm group-hover:scale-110 transition-transform">
+                                <Tags size={24} />
+                            </div>
+                            <span className="font-bold text-sm tracking-tight">Add New Category</span>
+                        </Link>
                     </div>
                 </div>
+
             </div>
         </div>
     );

@@ -59,30 +59,6 @@ const Home = () => {
         <div className="container mx-auto px-4 py-6" onClick={() => setActiveDropdown(null)}>
             {/* 1. Categories (Mobile: Top Slider, Desktop: Below Banners) */}
 
-            {/* Mobile Categories Slider */}
-            <div className="md:hidden mb-6">
-                <h2 className="text-lg font-bold text-gray-800 mb-3 border-l-4 border-primary pl-2">Categories</h2>
-                <swiper-container
-                    slides-per-view="4"
-                    space-between="10"
-                    free-mode="true"
-                >
-                    {categories.map((cat, index) => (
-                        <swiper-slide key={index}>
-                            <Link to={`/products?category=${cat.name}`} className="flex flex-col items-center">
-                                <div className="h-16 w-16 bg-white rounded-full border border-gray-200 flex items-center justify-center mb-2 shadow-sm overflow-hidden">
-                                    {cat.image ? (
-                                        <img src={cat.image} alt={cat.name} className="w-full h-full object-cover" />
-                                    ) : (
-                                        <span className="text-[10px] text-gray-500 font-bold">{cat.name.charAt(0)}</span>
-                                    )}
-                                </div>
-                                <span className="text-[10px] font-bold text-gray-800 text-center leading-tight">{cat.name}</span>
-                            </Link>
-                        </swiper-slide>
-                    ))}
-                </swiper-container>
-            </div>
 
             {/* 2. Banners */}
             <section className="mb-10">
@@ -206,20 +182,24 @@ const Home = () => {
                 )}
             </section>
 
-            {/* 3. Product Categories (Desktop Only) */}
-            <section className="hidden md:block mb-10">
-                <h2 className="text-2xl font-bold text-gray-800 mb-8 border-l-4 border-primary pl-3">Our Categories</h2>
-                <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-8">
+            {/* 3. Product Categories - Horizontal Scroll */}
+            <section className="mb-10 overflow-hidden">
+                <h2 className="text-xl md:text-2xl font-bold text-gray-800 mb-6 border-l-4 border-primary pl-3">Our Categories</h2>
+                <div className="flex overflow-x-auto scrollbar-hide pb-4 gap-6 md:gap-10 snap-x snap-mandatory px-4 -mx-4">
                     {categories.map((cat, index) => (
-                        <Link to={`/products?category=${cat.name}`} key={index} className="flex flex-col items-center group cursor-pointer">
-                            <div className="h-28 w-28 bg-white rounded-full border border-gray-100 flex items-center justify-center mb-4 shadow-sm overflow-hidden group-hover:shadow-md group-hover:border-primary/20 transition-all duration-300">
+                        <Link
+                            to={`/products?category=${cat.name}`}
+                            key={index}
+                            className="flex flex-col items-center group cursor-pointer flex-shrink-0 snap-center min-w-[90px] md:min-w-[140px] transform transition-all duration-300 hover:scale-105"
+                        >
+                            <div className="h-20 w-20 md:h-32 md:w-32 bg-white rounded-full border border-gray-100 flex items-center justify-center mb-3 md:mb-4 shadow-sm overflow-hidden group-hover:shadow-md group-hover:border-primary/20 transition-all duration-300">
                                 {cat.image ? (
                                     <img src={cat.image} alt={cat.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                                 ) : (
-                                    <span className="text-2xl font-bold text-primary">{cat.name.charAt(0)}</span>
+                                    <span className="text-xl md:text-3xl font-bold text-primary">{cat.name.charAt(0)}</span>
                                 )}
                             </div>
-                            <span className="text-sm font-bold text-gray-800 text-center leading-tight group-hover:text-primary transition-colors">{cat.name}</span>
+                            <span className="text-[10px] md:text-sm font-bold text-gray-800 text-center leading-tight group-hover:text-primary transition-colors max-w-[80px] md:max-w-none">{cat.name}</span>
                         </Link>
                     ))}
                 </div>

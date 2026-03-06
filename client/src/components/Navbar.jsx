@@ -126,18 +126,18 @@ const Navbar = () => {
     return (
         <>
             {/* 1. Top Contact Bar */}
-            <div className="bg-gray-100 py-1 text-center text-sm md:text-base border-b">
-                <div className="container mx-auto px-4 flex justify-center md:justify-end gap-6 text-gray-800 font-medium overflow-x-auto scrollbar-hide">
-                    <a href="tel:+919477432899" className="flex items-center gap-2 hover:text-primary transition whitespace-nowrap">
-                        <Phone size={18} className="text-secondary" />
+            <div className="bg-brand-blue py-1.5 text-center text-sm md:text-base border-b border-blue-800">
+                <div className="container mx-auto px-4 flex justify-center md:justify-end gap-6 text-white font-medium overflow-x-auto scrollbar-hide">
+                    <a href="tel:+919477432899" className="flex items-center gap-2 hover:text-secondary transition whitespace-nowrap">
+                        <Phone size={18} className="text-white" />
                         <span>+91 9477432899</span>
                     </a>
-                    <a href="https://wa.me/919051430698" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-green-600 transition whitespace-nowrap">
-                        <img src={wpLogo} alt="WhatsApp" className="h-6 w-6 object-contain" />
+                    <a href="https://wa.me/919051430698" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-[#25D366] transition whitespace-nowrap">
+                        <img src={wpLogo} alt="WhatsApp" className="h-6 w-6 object-contain brightness-0 invert" />
                         <span>+91 9051430698</span>
                     </a>
-                    <a href="mailto:prasenjitshaw68@gmail.com" className="hidden md:flex items-center gap-2 hover:text-primary transition whitespace-nowrap">
-                        <Mail size={18} className="text-secondary" />
+                    <a href="mailto:prasenjitshaw68@gmail.com" className="hidden md:flex items-center gap-2 hover:text-secondary transition whitespace-nowrap">
+                        <Mail size={18} className="text-white" />
                         <span>prasenjitshaw68@gmail.com</span>
                     </a>
                 </div>
@@ -154,7 +154,7 @@ const Navbar = () => {
                             </button>
                             <Link to="/" className="flex items-center gap-2">
                                 <img src={logo} alt="Anandamoyee India Logo" className="h-10 md:h-12 w-auto object-contain" />
-                                <span className="text-lg md:text-2xl font-bold tracking-tighter uppercase">Anandamoyee India</span>
+                                <span className="text-lg md:text-2xl font-bold tracking-tighter uppercase text-brand-blue">Anandamoyee India</span>
                             </Link>
                         </div>
 
@@ -228,7 +228,7 @@ const Navbar = () => {
                         <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-primary">
                             <div className="flex items-center gap-2">
                                 <img src={logo} alt="Logo" className="h-8 w-auto" />
-                                <span className="text-lg font-bold tracking-tight">Anandamoyee</span>
+                                <span className="text-lg font-bold tracking-tight text-brand-blue">Anandamoyee</span>
                             </div>
                             <button
                                 onClick={() => setIsMenuOpen(false)}
@@ -356,8 +356,8 @@ const Navbar = () => {
 
                             {loginStep === 'done' && (
                                 <div className="text-center py-6">
-                                    <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                        <CheckCircle2 size={36} className="text-green-600" />
+                                    <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <CheckCircle2 size={36} className="text-primary" />
                                     </div>
                                     <h3 className="text-lg font-bold text-gray-900 mb-1">You're logged in!</h3>
                                     <p className="text-gray-500 text-sm">Redirecting to your profile...</p>

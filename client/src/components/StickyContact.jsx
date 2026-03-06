@@ -10,7 +10,7 @@ const StickyContact = () => {
                 href="https://wa.me/919051430698"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-green-500 hover:bg-green-600 text-white p-1 rounded-full shadow-lg transition-transform hover:scale-110 flex items-center justify-center h-12 w-12 md:h-14 md:w-14"
+                className="bg-[#25D366] hover:bg-[#128C7E] text-white p-1 rounded-full shadow-lg transition-transform hover:scale-110 flex items-center justify-center h-12 w-12 md:h-14 md:w-14"
                 aria-label="Chat on WhatsApp"
             >
                 <img src={wpLogoWhite} alt="WhatsApp" className="h-10 w-10 md:h-12 md:w-12 object-contain" />

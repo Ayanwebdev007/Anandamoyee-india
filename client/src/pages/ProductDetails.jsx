@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Loader2, Minus, Plus, ShoppingCart, ArrowLeft, CheckCircle2, AlertCircle, X, Shield, Tag, Check, KeyRound, Edit3 } from 'lucide-react';
+import { Loader2, Minus, Plus, ShoppingCart, ArrowLeft, CheckCircle2, AlertCircle, X, Shield, Tag, Check, KeyRound, Edit3, Layers } from 'lucide-react';
+import ProductCard from '../components/ProductCard';
 import { useCart } from '../context/CartContext';
 import { useProfile } from '../context/ProfileContext';
 
@@ -10,6 +11,7 @@ const ProductDetails = () => {
     const { profile, isLoggedIn, login } = useProfile();
     const [cartAdded, setCartAdded] = useState(false);
     const [product, setProduct] = useState(null);
+    const [similarProducts, setSimilarProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [quantity, setQuantity] = useState(1);
     const [showOrderModal, setShowOrderModal] = useState(false);
@@ -29,22 +31,37 @@ const ProductDetails = () => {
     const timerRef = useRef(null);
 
     useEffect(() => {
-        const fetchProduct = async () => {
+        const fetchProductAndSimilar = async () => {
             try {
+                // Fetch current product
                 const res = await fetch(`/api/products/${id}`);
                 if (!res.ok) throw new Error('Product not found');
                 const data = await res.json();
                 setProduct(data);
+
+                // Initialize tabs
                 if (data.description) setActiveTab('description');
                 else if (data.specifications?.length) setActiveTab('specs');
                 else if (data.features?.length) setActiveTab('features');
+
+                // After product is set, fetch similar
+                const allRes = await fetch('/api/products');
+                if (allRes.ok) {
+                    const allProducts = await allRes.json();
+                    const similar = allProducts
+                        .filter(p => p.category === data.category && (p._id !== data._id && p.id !== data._id))
+                        .slice(0, 4); // Show top 4 similar products
+                    setSimilarProducts(similar);
+                }
             } catch (err) {
                 console.error(err);
             } finally {
                 setLoading(false);
             }
         };
-        fetchProduct();
+        fetchProductAndSimilar();
+        // Scroll to top when product ID changes
+        window.scrollTo(0, 0);
     }, [id]);
 
     // Cleanup timer on unmount
@@ -262,7 +279,7 @@ const ProductDetails = () => {
                             {product.originalPrice && (
                                 <>
                                     <span className="text-lg text-gray-400 line-through">₹{product.originalPrice.toLocaleString()}</span>
-                                    <span className="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded-full">{discount}% OFF</span>
+                                    <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">{discount}% OFF</span>
                                 </>
                             )}
                         </div>
@@ -270,7 +287,7 @@ const ProductDetails = () => {
                         {/* Warranty Badge */}
                         {product.warranty && (
                             <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-100 rounded-lg px-3 py-2 mb-4 w-fit">
-                                <Shield size={15} className="text-emerald-600" />
+                                <Shield size={15} className="text-emerald-500" />
                                 <span className="text-sm font-medium text-emerald-700">{product.warranty}</span>
                             </div>
                         )}
@@ -330,7 +347,7 @@ const ProductDetails = () => {
                                         setTimeout(() => setCartAdded(false), 1500);
                                     }}
                                     className={`flex-1 py-4 rounded-xl transition flex items-center justify-center gap-2 text-lg font-bold active:scale-[0.98] border-2 ${cartAdded
-                                        ? 'bg-green-500 border-green-500 text-white'
+                                        ? 'bg-yellow-500 border-yellow-500 text-white'
                                         : 'bg-white border-[#0400fe] text-[#0400fe] hover:bg-blue-50'
                                         }`}
                                 >
@@ -400,8 +417,8 @@ const ProductDetails = () => {
                                 <ul className="space-y-3">
                                     {product.features.map((feature, i) => (
                                         <li key={i} className="flex items-start gap-3">
-                                            <div className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                                <Check size={12} className="text-green-600" />
+                                            <div className="w-5 h-5 rounded-full bg-yellow-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                                <Check size={12} className="text-yellow-600" />
                                             </div>
                                             <span className="text-gray-700 text-sm leading-relaxed">{feature}</span>
                                         </li>
@@ -473,14 +490,14 @@ const ProductDetails = () => {
                             {/* LOGGED IN — Direct confirm */}
                             {step === 'confirm' && (
                                 <div>
-                                    <div className="flex items-center justify-between bg-green-50 border border-green-200 rounded-lg px-4 py-3 mb-5">
+                                    <div className="flex items-center justify-between bg-emerald-50 border border-emerald-200 rounded-lg px-4 py-3 mb-5">
                                         <div>
-                                            <p className="text-xs text-green-600 font-medium">Ordering as</p>
-                                            <p className="text-lg font-bold text-green-800">+91 {displayPhone}</p>
+                                            <p className="text-xs text-emerald-600 font-medium">Ordering as</p>
+                                            <p className="text-lg font-bold text-emerald-800">+91 {displayPhone}</p>
                                         </div>
                                         <button
                                             onClick={() => { setWantsChangeNumber(true); setStep('phone'); }}
-                                            className="text-xs text-green-700 hover:text-green-900 font-medium flex items-center gap-1"
+                                            className="text-xs text-emerald-700 hover:text-emerald-900 font-medium flex items-center gap-1"
                                         >
                                             <Edit3 size={12} /> Change
                                         </button>
@@ -562,9 +579,9 @@ const ProductDetails = () => {
                             {/* STEP 3: Confirm Order */}
                             {step === 'order' && (
                                 <div>
-                                    <div className="flex items-center gap-2 bg-green-50 border border-green-200 rounded-lg px-3 py-2 mb-5">
-                                        <CheckCircle2 size={16} className="text-green-600" />
-                                        <span className="text-sm font-medium text-green-700">+91 {phone} verified</span>
+                                    <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-200 rounded-lg px-3 py-2 mb-5">
+                                        <CheckCircle2 size={16} className="text-emerald-600" />
+                                        <span className="text-sm font-medium text-emerald-700">+91 {phone} verified</span>
                                     </div>
                                     <button
                                         onClick={handleOrder}
@@ -579,8 +596,8 @@ const ProductDetails = () => {
                             {/* SUCCESS */}
                             {step === 'success' && (
                                 <div className="text-center py-6">
-                                    <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                        <CheckCircle2 size={36} className="text-green-600" />
+                                    <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <CheckCircle2 size={36} className="text-primary" />
                                     </div>
                                     <h3 className="text-lg font-bold text-gray-900 mb-2">Order Placed Successfully!</h3>
                                     <p className="text-gray-600 text-sm mb-6">{orderResult?.message}</p>
@@ -590,6 +607,25 @@ const ProductDetails = () => {
                                 </div>
                             )}
                         </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Similar Products Section */}
+            {similarProducts.length > 0 && (
+                <div className="mt-16 mb-10">
+                    <div className="flex items-center gap-3 mb-8">
+                        <div className="p-2 bg-blue-50 rounded-lg text-brand-blue">
+                            <Layers size={24} />
+                        </div>
+                        <h2 className="text-2xl font-bold text-gray-900 uppercase tracking-tight">Similar <span className="text-brand-blue italic">Products</span></h2>
+                        <div className="flex-1 h-[2px] bg-gray-100 hidden sm:block"></div>
+                    </div>
+
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                        {similarProducts.map(p => (
+                            <ProductCard key={p._id || p.id} product={{ ...p, id: p._id || p.id }} />
+                        ))}
                     </div>
                 </div>
             )}

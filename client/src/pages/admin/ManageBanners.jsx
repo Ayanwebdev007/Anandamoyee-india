@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Trash2, Edit, Plus, Loader2, X, Image as ImageIcon, Link as LinkIcon, Type } from 'lucide-react';
+import { uploadToImgBB } from '../../utils/imageUpload';
 
 const ManageBanners = () => {
     const [banners, setBanners] = useState([]);
@@ -19,26 +20,16 @@ const ManageBanners = () => {
         if (!file) return;
 
         setUploading(true);
-        const reader = new FileReader();
-        reader.onloadend = async () => {
-            const base64String = reader.result;
-            try {
-                const res = await fetch('/api/upload', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ image: base64String })
-                });
-                const result = await res.json();
-                if (res.ok) {
-                    setFormData(prev => ({ ...prev, imageUrl: result.imageUrl }));
-                }
-            } catch (err) {
-                console.error('Upload failed:', err);
-            } finally {
-                setUploading(false);
+        try {
+            const url = await uploadToImgBB(file);
+            if (url) {
+                setFormData(prev => ({ ...prev, imageUrl: url }));
             }
-        };
-        reader.readAsDataURL(file);
+        } catch (err) {
+            console.error('Upload failed:', err);
+        } finally {
+            setUploading(false);
+        }
     };
 
     const fetchBanners = async () => {
@@ -117,14 +108,14 @@ const ManageBanners = () => {
 
     return (
         <div className="max-w-5xl mx-auto">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
                 <div>
                     <h1 className="text-2xl font-bold text-gray-800">Manage Banners</h1>
                     <p className="text-gray-500 text-sm">Update your homepage banners dynamically.</p>
                 </div>
                 <button
                     onClick={openAdd}
-                    className="bg-[#0400fe] text-white px-6 py-2.5 rounded-lg font-medium hover:bg-[#FFD700] hover:text-[#0400fe] transition-colors duration-300 flex items-center gap-2 shadow-md shadow-blue-200/50"
+                    className="w-full sm:w-auto bg-brand-blue text-white px-6 py-3 rounded-xl font-bold hover:bg-primary hover:text-brand-blue transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-blue-200"
                 >
                     <Plus size={20} />
                     Add Banner
@@ -146,59 +137,62 @@ const ManageBanners = () => {
                         <p className="text-gray-500">Add your first banner to display on the homepage.</p>
                     </div>
                 ) : (
-                    <table className="w-full text-left">
-                        <thead className="bg-gray-50 border-b border-gray-100">
-                            <tr>
-                                <th className="px-6 py-4 font-semibold text-gray-600 text-sm uppercase tracking-wider">Image</th>
-                                <th className="px-6 py-4 font-semibold text-gray-600 text-sm uppercase tracking-wider">Title</th>
-                                <th className="px-6 py-4 font-semibold text-gray-600 text-sm uppercase tracking-wider">Link</th>
-                                <th className="px-6 py-4 font-semibold text-gray-600 text-sm uppercase tracking-wider text-right">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-100">
-                            {banners.map((banner) => (
-                                <tr key={banner._id} className="hover:bg-gray-50/50 transition-colors">
-                                    <td className="px-6 py-4">
-                                        <div className="w-24 h-16 rounded-lg bg-gray-50 border border-gray-200 overflow-hidden flex items-center justify-center">
-                                            {banner.imageUrl ? (
-                                                <img src={banner.imageUrl} alt={banner.title} className="w-full h-full object-cover" />
-                                            ) : (
-                                                <ImageIcon size={18} className="text-gray-300" />
-                                            )}
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4 font-medium text-gray-800">{banner.title}</td>
-                                    <td className="px-6 py-4 text-gray-500 text-sm truncate max-w-xs">{banner.link || '-'}</td>
-                                    <td className="px-6 py-4 text-right">
-                                        <div className="flex items-center justify-end gap-2">
-                                            <button onClick={() => openEdit(banner)} className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Edit">
-                                                <Edit size={18} />
-                                            </button>
-                                            <button onClick={() => handleDelete(banner._id)} className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Delete">
-                                                <Trash2 size={18} />
-                                            </button>
-                                        </div>
-                                    </td>
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-left min-w-[600px]">
+                            <thead className="bg-gray-50/50 border-b border-gray-100">
+                                <tr>
+                                    <th className="px-6 py-4 font-black text-gray-400 text-[10px] uppercase tracking-widest">Banner Image</th>
+                                    <th className="px-6 py-4 font-black text-gray-400 text-[10px] uppercase tracking-widest">Title</th>
+                                    <th className="px-6 py-4 font-black text-gray-400 text-[10px] uppercase tracking-widest">Link</th>
+                                    <th className="px-6 py-4 font-black text-gray-400 text-[10px] uppercase tracking-widest text-right">Actions</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody className="divide-y divide-gray-100">
+                                {banners.map((banner) => (
+                                    <tr key={banner._id} className="hover:bg-gray-50/50 transition-colors">
+                                        <td className="px-6 py-4">
+                                            <div className="w-20 sm:w-24 h-12 sm:h-16 rounded-lg bg-gray-50 border border-gray-200 overflow-hidden flex items-center justify-center">
+                                                {banner.imageUrl ? (
+                                                    <img src={banner.imageUrl} alt={banner.title} className="w-full h-full object-cover" />
+                                                ) : (
+                                                    <ImageIcon size={18} className="text-gray-300" />
+                                                )}
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 font-medium text-gray-800 text-sm sm:text-base">{banner.title}</td>
+                                        <td className="px-6 py-4 text-gray-500 text-xs sm:text-sm truncate max-w-[150px] sm:max-w-xs">{banner.link || '-'}</td>
+                                        <td className="px-6 py-4 text-right">
+                                            <div className="flex items-center justify-end gap-1 sm:gap-2">
+                                                <button onClick={() => openEdit(banner)} className="p-1.5 sm:p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Edit">
+                                                    <Edit size={18} />
+                                                </button>
+                                                <button onClick={() => handleDelete(banner._id)} className="p-1.5 sm:p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Delete">
+                                                    <Trash2 size={18} />
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 )}
             </div>
 
             {/* Modal */}
             {showModal && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
                     <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowModal(false)} />
-                    <div className="bg-white rounded-2xl w-full max-w-lg relative z-10 shadow-2xl flex flex-col max-h-[90vh] overflow-y-auto">
-                        <div className="flex justify-between items-center p-6 border-b border-gray-100 sticky top-0 bg-white z-10">
+                    <div className="bg-white rounded-t-2xl sm:rounded-2xl w-full max-w-lg relative z-10 shadow-2xl flex flex-col max-h-[95vh] sm:max-h-[90vh] overflow-hidden">
+                        <div className="flex justify-between items-center p-4 sm:p-6 border-b border-gray-100 sticky top-0 bg-white z-10">
                             <h2 className="text-xl font-bold text-gray-800">{editingBanner ? 'Edit Banner' : 'Add New Banner'}</h2>
-                            <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-600 transition-colors">
+                            <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-600 transition-colors p-2">
                                 <X size={24} />
                             </button>
                         </div>
 
-                        <div className="p-6">
+                        <div className="p-4 sm:p-6 overflow-y-auto">
+
                             <form onSubmit={handleSubmit} className="space-y-6">
                                 <div>
                                     <label className="block text-sm font-semibold text-gray-700 mb-2">Banner Title <span className="text-red-500">*</span></label>
@@ -287,7 +281,7 @@ const ManageBanners = () => {
                                     </div>
                                 </div>
 
-                                <button type="submit" className="w-full bg-[#0400fe] text-white py-3 rounded-xl font-bold hover:bg-[#FFD700] hover:text-[#0400fe] transition-colors duration-300 shadow-lg shadow-blue-900/20 active:scale-[0.99] transform mt-4">
+                                <button type="submit" className="w-full bg-brand-blue text-white py-4 rounded-2xl font-black uppercase tracking-widest hover:bg-primary hover:text-brand-blue transition-all duration-300 shadow-xl shadow-blue-900/10 active:scale-[0.98] mt-4">
                                     {editingBanner ? 'Update Banner' : 'Add Banner'}
                                 </button>
                             </form>

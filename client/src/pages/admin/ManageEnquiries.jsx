@@ -71,30 +71,30 @@ const ManageEnquiries = () => {
         switch (status) {
             case 'new': return 'bg-blue-100 text-blue-700 border-blue-200';
             case 'read': return 'bg-yellow-100 text-yellow-700 border-yellow-200';
-            case 'replied': return 'bg-green-100 text-green-700 border-green-200';
+            case 'replied': return 'bg-yellow-100 text-yellow-700 border-yellow-200';
             default: return 'bg-gray-100 text-gray-700 border-gray-200';
         }
     };
 
     return (
-        <div className="p-4 md:p-8 max-w-7xl mx-auto min-h-screen bg-gray-50">
+        <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto min-h-screen bg-gray-50">
             {/* Header Section */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
                 <div>
-                    <h1 className="text-3xl font-black text-gray-900 uppercase tracking-tight">Customer <span className="text-blue-600">Enquiries</span></h1>
-                    <p className="text-gray-500 font-medium">Manage and respond to machinery quotations and questions.</p>
+                    <h1 className="text-2xl sm:text-3xl font-black text-gray-900 uppercase tracking-tight">Customer <span className="text-brand-blue">Enquiries</span></h1>
+                    <p className="text-gray-500 font-bold text-xs uppercase tracking-widest mt-1">Manage and respond to machinery quotations.</p>
                 </div>
                 <button
                     onClick={fetchEnquiries}
-                    className="flex items-center gap-2 bg-white px-4 py-2 rounded-xl shadow-sm border border-gray-200 hover:bg-gray-50 transition-colors font-bold text-sm"
+                    className="w-full sm:w-auto flex items-center justify-center gap-2 bg-white px-5 py-3 rounded-xl shadow-sm border border-gray-200 hover:border-brand-blue hover:text-brand-blue transition-all font-black text-[10px] uppercase tracking-widest"
                 >
                     <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
-                    Refresh
+                    Refresh Feed
                 </button>
             </div>
 
             {/* Filters Bar */}
-            <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-200 mb-6 flex flex-col md:flex-row gap-4 items-center">
+            <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-200 mb-6 flex flex-col lg:flex-row gap-4 items-center">
                 <div className="relative flex-1 w-full">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                     <input
@@ -102,17 +102,17 @@ const ManageEnquiries = () => {
                         placeholder="Search by name, email or subject..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-medium"
+                        className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-medium text-sm sm:text-base"
                     />
                 </div>
-                <div className="flex items-center gap-2 w-full md:w-auto">
+                <div className="flex items-center gap-2 w-full lg:w-auto">
                     <Filter className="text-gray-400" size={20} />
                     <select
                         value={filterStatus}
                         onChange={(e) => setFilterStatus(e.target.value)}
-                        className="flex-1 md:flex-none px-4 py-2 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-bold text-sm appearance-none bg-white min-w-[140px]"
+                        className="flex-1 lg:flex-none px-4 py-2.5 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-bold text-sm appearance-none bg-white min-w-[140px]"
                     >
-                        <option value="all">All Enquiries</option>
+                        <option value="all">All Status</option>
                         <option value="new">New</option>
                         <option value="read">Read</option>
                         <option value="replied">Replied</option>
@@ -122,17 +122,18 @@ const ManageEnquiries = () => {
 
             {/* Content Table / Grid */}
             {loading && enquiries.length === 0 ? (
-                <div className="bg-white rounded-[32px] shadow-sm border border-gray-100 p-20 text-center">
-                    <div className="animate-spin w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-4"></div>
-                    <p className="text-gray-500 font-bold uppercase tracking-widest text-sm">Loading Enquiries...</p>
+                <div className="bg-white rounded-[32px] shadow-sm border border-gray-100 p-12 sm:p-20 text-center">
+                    <div className="animate-spin w-10 h-10 sm:w-12 sm:h-12 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-4"></div>
+                    <p className="text-gray-500 font-bold uppercase tracking-widest text-xs sm:text-sm">Loading Enquiries...</p>
                 </div>
             ) : filteredEnquiries.length === 0 ? (
-                <div className="bg-white rounded-[32px] shadow-sm border border-gray-100 p-20 text-center">
-                    <MessageSquare className="w-16 h-16 text-gray-200 mx-auto mb-4" />
-                    <h3 className="text-xl font-bold text-gray-900 mb-1 tracking-tight">NO ENQUIRIES FOUND</h3>
-                    <p className="text-gray-500 font-medium">Try changing your search or filter keywords.</p>
+                <div className="bg-white rounded-[32px] shadow-sm border border-gray-100 p-12 sm:p-20 text-center">
+                    <MessageSquare className="w-12 h-12 sm:w-16 sm:h-16 text-gray-200 mx-auto mb-4" />
+                    <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-1 tracking-tight uppercase">No Enquiries Found</h3>
+                    <p className="text-gray-500 font-medium text-sm">Try adjusting your filters.</p>
                 </div>
             ) : (
+
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {filteredEnquiries.map((enquiry) => (
                         <div
@@ -228,7 +229,7 @@ const ManageEnquiries = () => {
                                 <div className="space-y-1">
                                     <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Phone Number</label>
                                     <p className="font-bold text-gray-900 flex items-center gap-2">
-                                        <Phone size={16} className="text-green-600" /> +91 {selectedEnquiry.phone}
+                                        <Phone size={16} className="text-yellow-600" /> +91 {selectedEnquiry.phone}
                                     </p>
                                 </div>
                             </div>

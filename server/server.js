@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const path = require('path');
-const multer = require('multer');
 const Product = require('./models/Product');
 const Category = require('./models/Category');
 const Banner = require('./models/Banner');
@@ -11,6 +10,7 @@ const Order = require('./models/Order');
 const Setting = require('./models/Setting');
 const Customer = require('./models/Customer');
 const Enquiry = require('./models/Enquiry');
+const Visit = require('./models/Visit');
 const whatsapp = require('./whatsapp');
 
 const fs = require('fs');
@@ -20,44 +20,10 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Ensure uploads directory exists
-const uploadDir = path.join(__dirname, 'uploads');
-if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir);
-}
-
 // Middleware
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
-app.use('/uploads', express.static(uploadDir));
-
-// Multer Storage Configuration
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/');
-    },
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + '-' + file.originalname);
-    }
-});
-
-const upload = multer({ storage: storage });
-
-// Upload endpoint (Handles both file uploads and base64 strings)
-app.post('/api/upload', upload.single('image'), (req, res) => {
-    // If it's a traditional file upload (via Multer)
-    if (req.file) {
-        return res.json({ imageUrl: `/uploads/${req.file.filename}` });
-    }
-
-    // If it's a base64 string in the body
-    if (req.body.image && req.body.image.startsWith('data:image/')) {
-        return res.json({ imageUrl: req.body.image });
-    }
-
-    res.status(400).json({ message: 'No file or valid base64 provided' });
-});
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGODB_URI)
@@ -584,6 +550,96 @@ app.delete('/api/orders/:id', async (req, res) => {
         await Order.findByIdAndDelete(req.params.id);
         res.json({ message: 'Order deleted' });
     } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+
+// --- ANALYTICS ROUTES ---
+
+// Track a page visit
+app.post('/api/analytics/track', async (req, res) => {
+    try {
+        const { sessionId, path, deviceType, os } = req.body;
+
+        // Basic validation
+        if (!sessionId || !path) {
+            return res.status(400).json({ message: 'Missing required tracking data' });
+        }
+
+        // Create visit record (auto-expires after 7 days via TTL index)
+        const visit = new Visit({
+            sessionId,
+            path,
+            deviceType: deviceType || 'unknown',
+            os: os || 'unknown'
+        });
+
+        await visit.save();
+        res.status(200).json({ success: true });
+    } catch (error) {
+        console.error('Analytics tracking error:', error);
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// Get analytics stats for the dashboard
+app.get('/api/analytics/stats', async (req, res) => {
+    try {
+        // Calculate date 7 days ago (to ensure clean queries even if TTL is slightly delayed)
+        const sevenDaysAgo = new Date();
+        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+        // Common match for last 7 days
+        const dateMatch = { createdAt: { $gte: sevenDaysAgo } };
+
+        // 1. Total Pageviews
+        const totalPageviews = await Visit.countDocuments(dateMatch);
+
+        // 2. Unique Visitors (distinct sessionIds)
+        const uniqueVisitors = (await Visit.distinct('sessionId', dateMatch)).length;
+
+        // 3. Top Pages
+        const topPages = await Visit.aggregate([
+            { $match: dateMatch },
+            { $group: { _id: '$path', views: { $sum: 1 } } },
+            { $sort: { views: -1 } },
+            { $limit: 10 },
+            { $project: { path: '$_id', views: 1, _id: 0 } }
+        ]);
+
+        // 4. Device Breakdown
+        const deviceStats = await Visit.aggregate([
+            { $match: dateMatch },
+            { $group: { _id: '$deviceType', count: { $sum: 1 } } },
+            { $project: { device: '$_id', count: 1, _id: 0 } }
+        ]);
+
+        // 5. Views over the last 7 days (for line chart)
+        const viewsOverTime = await Visit.aggregate([
+            { $match: dateMatch },
+            {
+                $group: {
+                    _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+                    views: { $sum: 1 }
+                }
+            },
+            { $sort: { _id: 1 } },
+            { $project: { date: '$_id', views: 1, _id: 0 } }
+        ]);
+
+        res.json({
+            summary: {
+                totalPageviews,
+                uniqueVisitors
+            },
+            topPages,
+            deviceStats,
+            viewsOverTime
+        });
+
+    } catch (error) {
+        console.error('Analytics stats error:', error);
         res.status(500).json({ message: error.message });
     }
 });

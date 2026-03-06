@@ -50,30 +50,30 @@ const WhatsAppConnect = () => {
     };
 
     return (
-        <div className="max-w-2xl mx-auto">
+        <div className="max-w-2xl mx-auto px-4 sm:px-0">
             <div className="mb-8">
-                <h1 className="text-2xl font-bold text-gray-800">WhatsApp Connection</h1>
-                <p className="text-gray-500 text-sm">Connect your WhatsApp to receive order notifications.</p>
+                <h1 className="text-2xl font-black text-gray-900 uppercase tracking-tight">WhatsApp <span className="text-brand-blue">Connection</span></h1>
+                <p className="text-gray-500 font-bold text-[10px] uppercase tracking-widest mt-1">Notification Bridge Status</p>
             </div>
 
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                 {/* Status Bar */}
-                <div className={`px-6 py-4 flex items-center justify-between border-b ${status === 'connected' ? 'bg-green-50 border-green-100' :
-                        status === 'connecting' ? 'bg-yellow-50 border-yellow-100' :
-                            'bg-gray-50 border-gray-100'
+                <div className={`px-4 sm:px-6 py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between border-b gap-4 ${status === 'connected' ? 'bg-yellow-50 border-yellow-100' :
+                    status === 'connecting' ? 'bg-yellow-50 border-yellow-100' :
+                        'bg-gray-50 border-gray-100'
                     }`}>
                     <div className="flex items-center gap-3">
                         {status === 'connected' ? (
-                            <Wifi size={20} className="text-green-600" />
+                            <Wifi size={20} className="text-yellow-600" />
                         ) : status === 'connecting' ? (
                             <Loader2 size={20} className="text-yellow-600 animate-spin" />
                         ) : (
                             <WifiOff size={20} className="text-gray-400" />
                         )}
                         <div>
-                            <span className={`text-sm font-bold ${status === 'connected' ? 'text-green-700' :
-                                    status === 'connecting' ? 'text-yellow-700' :
-                                        'text-gray-600'
+                            <span className={`text-sm font-bold ${status === 'connected' ? 'text-yellow-700' :
+                                status === 'connecting' ? 'text-yellow-700' :
+                                    'text-gray-600'
                                 }`}>
                                 {status === 'connected' ? 'Connected' :
                                     status === 'connecting' ? 'Waiting for QR scan...' :
@@ -85,7 +85,7 @@ const WhatsAppConnect = () => {
                     {status === 'connected' && (
                         <button
                             onClick={handleDisconnect}
-                            className="text-sm text-red-600 hover:bg-red-50 px-3 py-1.5 rounded-lg transition-colors font-medium flex items-center gap-1.5"
+                            className="w-full sm:w-auto text-sm text-red-600 hover:bg-red-50 px-3 py-1.5 rounded-lg transition-colors font-medium flex items-center justify-center gap-1.5 border border-red-100 sm:border-none"
                         >
                             <LogOut size={14} />
                             Disconnect
@@ -94,35 +94,35 @@ const WhatsAppConnect = () => {
                 </div>
 
                 {/* Content */}
-                <div className="p-8">
+                <div className="p-4 sm:p-8">
                     {status === 'connected' ? (
                         <div className="text-center py-8">
-                            <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <Wifi size={36} className="text-green-600" />
+                            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <Wifi size={32} className="text-yellow-600" />
                             </div>
-                            <h3 className="text-xl font-bold text-gray-900 mb-2">WhatsApp is Connected!</h3>
+                            <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2">WhatsApp is Connected!</h3>
                             <p className="text-gray-500 text-sm">You will receive order notifications on your linked WhatsApp number.</p>
                         </div>
                     ) : qrData ? (
                         <div className="text-center">
-                            <div className="inline-block p-4 bg-white border-2 border-gray-200 rounded-2xl mb-6">
-                                <QRCode value={qrData} size={256} />
+                            <div className="inline-block p-4 bg-white border-2 border-gray-200 rounded-2xl mb-6 max-w-full">
+                                <QRCode value={qrData} size={200} className="max-w-full h-auto mx-auto" />
                             </div>
                             <h3 className="text-lg font-bold text-gray-900 mb-2">Scan QR Code</h3>
                             <p className="text-gray-500 text-sm mb-1">Open WhatsApp on your phone</p>
-                            <p className="text-gray-500 text-sm">Go to <strong>Settings → Linked Devices → Link a Device</strong></p>
+                            <p className="text-gray-500 text-sm">Go to <strong>Settings → Linked Devices</strong></p>
                         </div>
                     ) : (
                         <div className="text-center py-8">
-                            <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <QrCode size={36} className="text-gray-400" />
+                            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <QrCode size={32} className="text-gray-400" />
                             </div>
                             <h3 className="text-lg font-bold text-gray-900 mb-2">Connect WhatsApp</h3>
                             <p className="text-gray-500 text-sm mb-6">Link your WhatsApp to start receiving order notifications.</p>
                             <button
                                 onClick={handleConnect}
                                 disabled={polling}
-                                className="bg-[#25D366] text-white px-8 py-3 rounded-xl font-bold hover:bg-[#1da64e] transition-colors shadow-lg shadow-green-200/50 flex items-center gap-2 mx-auto disabled:opacity-60"
+                                className="w-full sm:w-auto bg-[#25D366] text-white px-8 py-3 rounded-xl font-bold hover:bg-[#1da64e] transition-colors shadow-lg shadow-yellow-200/50 flex items-center justify-center gap-2 mx-auto disabled:opacity-60"
                             >
                                 {polling ? (
                                     <>
@@ -140,6 +140,7 @@ const WhatsAppConnect = () => {
                     )}
                 </div>
             </div>
+
 
             <div className="mt-6 bg-blue-50 border border-blue-100 rounded-xl p-4">
                 <h4 className="text-sm font-bold text-blue-800 mb-1">💡 How it works</h4>

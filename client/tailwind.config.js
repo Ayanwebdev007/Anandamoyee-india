@@ -9,7 +9,7 @@ export default {
             colors: {
                 primary: '#FFD700', // Gold/Yellow from logo
                 secondary: '#000000',
-                'brand-blue': '#0400fe',
+                'brand-blue': '#000053',
                 'brand-red': '#f70302',
             }
         },

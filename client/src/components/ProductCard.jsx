@@ -17,7 +17,7 @@ const ProductCard = ({ product }) => {
                     className="w-full h-full object-cover group-hover:scale-110 transition duration-500"
                 />
                 {discount > 0 && (
-                    <div className="absolute top-2 left-2 bg-[#f70302] text-white text-[10px] font-bold px-2 py-1 rounded shadow-sm">
+                    <div className="absolute top-2 left-2 bg-[#25D366] text-white text-[10px] font-bold px-2 py-1 rounded shadow-sm">
                         {discount}% OFF
                     </div>
                 )}

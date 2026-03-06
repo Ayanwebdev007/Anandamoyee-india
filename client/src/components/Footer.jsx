@@ -173,7 +173,7 @@ const Footer = () => {
                     <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left">
                         <div className="space-y-2">
                             <p className="text-white/40 text-[10px] font-black uppercase tracking-[0.25em]">
-                                &copy; {new Date().getFullYear()} <span className="text-white">Anandamoyee India</span>. All Rights Reserved.
+                                &copy; {new Date().getFullYear()} <span className="text-brand-blue">Anandamoyee India</span>. All Rights Reserved.
                             </p>
                             <p className="text-white/20 text-[9px] font-bold uppercase tracking-[0.1em]">Engineered with Excellence in India</p>
                         </div>

@@ -105,8 +105,8 @@ const ContactUs = () => {
                                     </h2>
 
                                     {status.message && (
-                                        <div className={`p-4 rounded-2xl mb-8 flex items-start gap-3 ${status.type === 'success' ? 'bg-green-50 text-green-700 border border-green-100' : 'bg-red-50 text-red-700 border border-red-100'}`}>
-                                            <MessageCircle size={20} className="mt-0.5 flex-shrink-0" />
+                                        <div className={`p-4 rounded-2xl mb-8 flex items-start gap-3 ${status.type === 'success' ? 'bg-yellow-50 text-yellow-700 border border-yellow-100' : 'bg-red-50 text-red-700 border border-red-100'}`}>
+                                            <CheckCircle2 size={20} className="mt-0.5 flex-shrink-0" />
                                             <p className="text-sm font-medium">{status.message}</p>
                                         </div>
                                     )}
@@ -183,7 +183,7 @@ const ContactUs = () => {
                             </div>
                             <h3 className="text-lg font-bold mb-3 uppercase tracking-tight">Our Factory</h3>
                             <p className="text-gray-500 text-sm font-medium leading-relaxed">
-                                Anandamoyee India<br />
+                                <span className="text-brand-blue">Anandamoyee India</span><br />
                                 172, V Rd, Kunjapara, Netajigarh,<br />
                                 Dasnagar, Howrah, West Bengal 711105
                             </p>
@@ -201,8 +201,8 @@ const ContactUs = () => {
 
                         {/* Hours Card */}
                         <div className="flex-shrink-0 w-[85%] md:w-full bg-white p-8 rounded-[32px] shadow-lg border border-gray-100 flex flex-col items-center text-center snap-center transform transition-transform md:hover:scale-[1.02]">
-                            <div className="w-14 h-14 bg-green-50 rounded-2xl flex items-center justify-center mb-6">
-                                <Clock className="text-green-600 w-6 h-6" />
+                            <div className="w-14 h-14 bg-yellow-50 rounded-2xl flex items-center justify-center mb-6">
+                                <Clock className="text-yellow-600 w-6 h-6" />
                             </div>
                             <h3 className="text-lg font-bold mb-3 uppercase tracking-tight">Operational Hours</h3>
                             <p className="text-gray-500 text-sm font-medium mb-1">Mon - Sat: 9:00 AM - 7:00 PM</p>

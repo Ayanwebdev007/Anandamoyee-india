@@ -131,7 +131,7 @@ const AboutUs = () => {
                                 {/* Glassmorphism Overlay */}
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-8 md:p-10 pointer-events-none">
                                     <div className="translate-y-10 group-hover:translate-y-0 transition-transform duration-500">
-                                        <p className="text-primary font-black uppercase tracking-[0.2em] text-[10px] md:text-xs mb-3 flex items-center gap-2">
+                                        <p className="text-brand-blue font-black uppercase tracking-[0.2em] text-[10px] md:text-xs mb-3 flex items-center gap-2">
                                             <div className="w-6 h-[2px] bg-primary"></div>
                                             Anandamoyee India
                                         </p>
