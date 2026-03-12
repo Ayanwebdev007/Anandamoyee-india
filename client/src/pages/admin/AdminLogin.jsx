@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Lock, User, ShieldCheck } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import logo from '../../assets/logo.png';
+import logo from '../../assets/ai logo new.png';
 
 const AdminLogin = () => {
     const [username, setUsername] = useState('');

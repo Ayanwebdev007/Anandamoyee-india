@@ -22,6 +22,7 @@ const ProductList = () => {
 
     const [products, setProducts] = useState([]);
     const [categories, setCategories] = useState([]);
+    const [banners, setBanners] = useState([]);
     const [loading, setLoading] = useState(true);
     const [activeDropdown, setActiveDropdown] = useState(null); // 'filter', 'sort', or null
     const [error, setError] = useState(null);
@@ -129,16 +130,58 @@ const ProductList = () => {
                 <div className="h-1 w-16 bg-[#FFD700] mx-auto mt-3 rounded-full opacity-90" />
             </div>
 
-            {/* 2. Banner Section - Clean & Premium */}
-            {currentCategoryData?.banner && (
-                <div className="w-full relative overflow-hidden">
-                    <img
-                        src={currentCategoryData.banner}
-                        alt={selectedCategory}
-                        className="w-full h-auto max-h-[350px] md:max-h-[450px] object-cover"
-                    />
-                </div>
-            )}
+            {/* 2. Banner Section - Category Specific */}
+            <section className="mt-6 mb-10">
+                {currentCategoryData?.banners && currentCategoryData.banners.length > 0 ? (
+                    <>
+                        {/* Mobile View: Carousel */}
+                        <div className="md:hidden">
+                            <swiper-container
+                                slides-per-view="1"
+                                speed="500"
+                                loop="true"
+                                css-mode="true"
+                                autoplay-delay="2000"
+                                autoplay-disable-on-interaction="false"
+                            >
+                                {currentCategoryData.banners.map((bannerUrl, index) => (
+                                    <swiper-slide key={index}>
+                                        <div className="rounded-lg shadow-md overflow-hidden h-48 relative bg-gray-200">
+                                            <img
+                                                src={bannerUrl}
+                                                alt={`${selectedCategory} Banner ${index + 1}`}
+                                                className="w-full h-full object-cover"
+                                            />
+                                        </div>
+                                    </swiper-slide>
+                                ))}
+                            </swiper-container>
+                        </div>
+
+                        {/* Desktop View: Grid (First 2 banners) */}
+                        <div className="hidden md:grid grid-cols-2 gap-4">
+                            {currentCategoryData.banners.slice(0, 2).map((bannerUrl, index) => (
+                                <div key={index} className="rounded-lg shadow-md overflow-hidden h-64 relative bg-gray-200 group">
+                                    <img
+                                        src={bannerUrl}
+                                        alt={`${selectedCategory} Banner ${index + 1}`}
+                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                    />
+                                </div>
+                            ))}
+                            {/* If only 1 banner, show a placeholder or just one */}
+                            {currentCategoryData.banners.length === 1 && (
+                                <div className="rounded-lg shadow-md overflow-hidden h-64 relative bg-gray-100 flex items-center justify-center">
+                                    <p className="text-gray-400 font-medium tracking-widest text-[10px] uppercase">Anandamoyee India</p>
+                                </div>
+                            )}
+                        </div>
+                    </>
+                ) : (
+                    // Fallback visually clean spacer if no category banners
+                    <div className="h-4" />
+                )}
+            </section>
 
             <div className="container mx-auto px-4 mt-10">
                 {/* 3. Filter & Sort Bar (Home Style) */}

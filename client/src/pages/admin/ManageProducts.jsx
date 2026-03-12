@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Trash2, Edit, Plus, Loader2, X, Search, Filter, Image as ImageIcon } from 'lucide-react';
-import { uploadToImgBB } from '../../utils/imageUpload';
+import { uploadToS3 } from '../../utils/imageUpload';
 
 const ManageProducts = () => {
     const [products, setProducts] = useState([]);
@@ -27,7 +27,7 @@ const ManageProducts = () => {
 
         setUploading(true);
         try {
-            const url = await uploadToImgBB(file);
+            const url = await uploadToS3(file);
             if (url) {
                 setFormData({ ...formData, image: url });
             }
@@ -44,7 +44,7 @@ const ManageProducts = () => {
 
         setUploadingExtra(true);
         try {
-            const url = await uploadToImgBB(file);
+            const url = await uploadToS3(file);
             if (url) {
                 setFormData({ ...formData, images: [...formData.images, url] });
             }

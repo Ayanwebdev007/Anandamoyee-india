@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Trash2, Edit, Plus, Loader2, X, Image as ImageIcon } from 'lucide-react';
-import { uploadToImgBB } from '../../utils/imageUpload';
+import { uploadToS3 } from '../../utils/imageUpload';
 
 const ManageCategories = () => {
     const [categories, setCategories] = useState([]);
     const [newCategory, setNewCategory] = useState('');
     const [CategoryImage, setCategoryImage] = useState('');
-    const [CategoryBanner, setCategoryBanner] = useState('');
+    const [CategoryBanners, setCategoryBanners] = useState([]);
     const [uploading, setUploading] = useState(false);
     const [bannerUploading, setBannerUploading] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -21,10 +21,10 @@ const ManageCategories = () => {
         else setBannerUploading(true);
 
         try {
-            const url = await uploadToImgBB(file);
+            const url = await uploadToS3(file);
             if (url) {
                 if (type === 'image') setCategoryImage(url);
-                else setCategoryBanner(url);
+                else setCategoryBanners(prev => [...prev, url]);
             }
         } catch (err) {
             console.error('Upload failed:', err);
@@ -66,14 +66,14 @@ const ManageCategories = () => {
                 body: JSON.stringify({
                     name: newCategory,
                     image: CategoryImage,
-                    banner: CategoryBanner
+                    banners: CategoryBanners
                 })
             });
             if (res.ok) {
                 setShowModal(false);
                 setNewCategory('');
                 setCategoryImage('');
-                setCategoryBanner('');
+                setCategoryBanners([]);
                 setEditingCategory(null);
                 fetchCategories();
             }
@@ -86,7 +86,7 @@ const ManageCategories = () => {
         setEditingCategory(cat);
         setNewCategory(cat.name);
         setCategoryImage(cat.image || '');
-        setCategoryBanner(cat.banner || '');
+        setCategoryBanners(cat.banners || []);
         setShowModal(true);
     };
 
@@ -94,7 +94,7 @@ const ManageCategories = () => {
         setEditingCategory(null);
         setNewCategory('');
         setCategoryImage('');
-        setCategoryBanner('');
+        setCategoryBanners([]);
         setShowModal(true);
     };
 
@@ -236,33 +236,42 @@ const ManageCategories = () => {
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-semibold text-gray-700 mb-2">Category Banner (Page Top)</label>
-                                    <div className="space-y-3">
-                                        <div className="w-full aspect-[3/1] bg-gray-50 rounded-lg overflow-hidden border border-gray-200 flex items-center justify-center">
-                                            {CategoryBanner ? (
-                                                <img src={CategoryBanner} alt="Banner Preview" className="w-full h-full object-cover" />
-                                            ) : (
-                                                <div className="text-center">
-                                                    <ImageIcon className="text-gray-300 mx-auto mb-1" size={24} />
-                                                    <span className="text-[10px] text-gray-400">Banner Recommendation: 1200x400</span>
+                                    <label className="block text-sm font-semibold text-gray-700 mb-2">Category Banners (Page Top Carousel)</label>
+                                    <div className="space-y-4">
+                                        <div className="grid grid-cols-2 gap-3">
+                                            {CategoryBanners.map((banner, index) => (
+                                                <div key={index} className="relative aspect-[3/1] bg-gray-50 rounded-lg overflow-hidden border border-gray-200 group">
+                                                    <img src={banner} alt={`Banner ${index + 1}`} className="w-full h-full object-cover" />
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setCategoryBanners(CategoryBanners.filter((_, i) => i !== index))}
+                                                        className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                                                    >
+                                                        <X size={12} />
+                                                    </button>
                                                 </div>
-                                            )}
+                                            ))}
+                                            <div className="relative aspect-[3/1] bg-gray-50 rounded-lg overflow-hidden border border-dashed border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors">
+                                                <input
+                                                    type="file"
+                                                    accept="image/*"
+                                                    onChange={(e) => handleFileUpload(e, 'banner')}
+                                                    className="absolute inset-0 opacity-0 cursor-pointer"
+                                                    disabled={bannerUploading}
+                                                />
+                                                <div className="text-center">
+                                                    {bannerUploading ? (
+                                                        <Loader2 className="animate-spin text-brand-blue mx-auto" size={16} />
+                                                    ) : (
+                                                        <>
+                                                            <Plus className="text-gray-400 mx-auto mb-0.5" size={16} />
+                                                            <span className="text-[10px] text-gray-500 font-medium">Add Banner</span>
+                                                        </>
+                                                    )}
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div className="relative">
-                                            <input
-                                                type="file"
-                                                accept="image/*"
-                                                onChange={(e) => handleFileUpload(e, 'banner')}
-                                                className="hidden"
-                                                id="category-banner-upload"
-                                            />
-                                            <label
-                                                htmlFor="category-banner-upload"
-                                                className={`w-full cursor-pointer inline-flex items-center justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-colors ${bannerUploading ? 'opacity-50 cursor-not-allowed' : ''}`}
-                                            >
-                                                {bannerUploading ? <Loader2 className="animate-spin mr-2" size={16} /> : 'Choose Banner'}
-                                            </label>
-                                        </div>
+                                        <p className="text-[10px] text-gray-400">Recommendation: 1200x400. You can add multiple banners for a carousel effect.</p>
                                     </div>
                                 </div>
 

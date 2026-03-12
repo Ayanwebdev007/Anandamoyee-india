@@ -31,4 +31,4 @@ const getDominantColors = (imagePath) => {
     });
 };
 
-getDominantColors('src/assets/logo.png').then(console.log).catch(console.error);
+getDominantColors('src/assets/ai logo new.png').then(console.log).catch(console.error);

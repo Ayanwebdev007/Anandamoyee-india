@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Trash2, Edit, Plus, Loader2, X, Image as ImageIcon, Link as LinkIcon, Type } from 'lucide-react';
-import { uploadToImgBB } from '../../utils/imageUpload';
+import { uploadToS3 } from '../../utils/imageUpload';
 
 const ManageBanners = () => {
     const [banners, setBanners] = useState([]);
@@ -21,7 +21,7 @@ const ManageBanners = () => {
 
         setUploading(true);
         try {
-            const url = await uploadToImgBB(file);
+            const url = await uploadToS3(file);
             if (url) {
                 setFormData(prev => ({ ...prev, imageUrl: url }));
             }

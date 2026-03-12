@@ -16,11 +16,6 @@ const ProductCard = ({ product }) => {
                     alt={product.name}
                     className="w-full h-full object-cover group-hover:scale-110 transition duration-500"
                 />
-                {discount > 0 && (
-                    <div className="absolute top-2 left-2 bg-[#25D366] text-white text-[10px] font-bold px-2 py-1 rounded shadow-sm">
-                        {discount}% OFF
-                    </div>
-                )}
             </Link>
             <div className="p-3 flex-1 flex flex-col">
                 <div className="mb-2">
@@ -38,7 +33,12 @@ const ProductCard = ({ product }) => {
                     <div className="flex items-center gap-2 mb-3">
                         <span className="text-[#1a1a1a] font-black text-lg">₹{product.price.toLocaleString()}</span>
                         {product.originalPrice && product.originalPrice > product.price && (
-                            <span className="text-xs text-gray-400 line-through">₹{product.originalPrice.toLocaleString()}</span>
+                            <div className="flex items-center gap-1.5 ml-1">
+                                <span className="text-xs text-gray-400 line-through">₹{product.originalPrice.toLocaleString()}</span>
+                                <span className="text-[10px] font-bold text-[#25D366] bg-[#25D366]/10 px-1.5 py-0.5 rounded border border-[#25D366]/20">
+                                    {discount}% OFF
+                                </span>
+                            </div>
                         )}
                     </div>
                     <Link

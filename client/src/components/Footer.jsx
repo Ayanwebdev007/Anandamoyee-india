@@ -5,7 +5,7 @@ import {
     MessageCircle, ArrowRight, Award, Headset, ShieldCheck,
     BadgeCheck, Package, RotateCcw, Lock
 } from 'lucide-react';
-import logo from '../assets/logo.png';
+import logo from '../assets/ai logo new.png';
 import mii from '../assets/mii.png';
 
 const Footer = () => {

@@ -4,7 +4,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useProfile } from '../context/ProfileContext';
 
-import logo from '../assets/logo.png';
+import logo from '../assets/ai logo new.png';
 import wpLogo from '../assets/wp logo.png';
 
 const Navbar = () => {

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import { LayoutDashboard, Package, Tags, ArrowLeft, LogOut, Image as ImageIcon, ShoppingCart, Settings, MessageSquare, Menu, X, Activity } from 'lucide-react';
-import logo from '../../assets/logo.png';
+import logo from '../../assets/ai logo new.png';
 import { useAuth } from '../../context/AuthContext';
 
 const AdminLayout = () => {

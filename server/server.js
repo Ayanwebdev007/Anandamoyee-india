@@ -12,6 +12,8 @@ const Customer = require('./models/Customer');
 const Enquiry = require('./models/Enquiry');
 const Visit = require('./models/Visit');
 const whatsapp = require('./whatsapp');
+const { s3Client, deleteFromS3 } = require('./config/s3Config');
+const uploadRoutes = require('./routes/uploadRoutes');
 
 const fs = require('fs');
 
@@ -24,6 +26,9 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
+
+// S3 Upload Route
+app.use('/api/upload', uploadRoutes);
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGODB_URI)
@@ -70,7 +75,14 @@ app.put('/api/categories/:id', async (req, res) => {
 // Delete a category
 app.delete('/api/categories/:id', async (req, res) => {
     try {
-        await Category.findByIdAndDelete(req.params.id);
+        const category = await Category.findById(req.params.id);
+        if (category) {
+            if (category.image) await deleteFromS3(category.image);
+            if (category.banners && category.banners.length > 0) {
+                await Promise.all(category.banners.map(banner => deleteFromS3(banner)));
+            }
+            await Category.findByIdAndDelete(req.params.id);
+        }
         res.json({ message: 'Category deleted' });
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -117,7 +129,18 @@ app.put('/api/products/:id', async (req, res) => {
 // Delete a product
 app.delete('/api/products/:id', async (req, res) => {
     try {
-        await Product.findByIdAndDelete(req.params.id);
+        const product = await Product.findById(req.params.id);
+        if (product) {
+            // Delete main image
+            if (product.image) await deleteFromS3(product.image);
+
+            // Delete additional images if any
+            if (product.images && product.images.length > 0) {
+                await Promise.all(product.images.map(img => deleteFromS3(img)));
+            }
+
+            await Product.findByIdAndDelete(req.params.id);
+        }
         res.json({ message: 'Product deleted' });
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -175,6 +198,10 @@ app.put('/api/banners/:id', async (req, res) => {
 // Delete a banner
 app.delete('/api/banners/:id', async (req, res) => {
     try {
+        const banner = await Banner.findById(req.params.id);
+        if (banner && banner.imageUrl) {
+            await deleteFromS3(banner.imageUrl);
+        }
         await Banner.findByIdAndDelete(req.params.id);
         res.json({ message: 'Banner deleted' });
     } catch (error) {

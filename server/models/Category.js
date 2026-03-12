@@ -11,9 +11,9 @@ const categorySchema = new mongoose.Schema({
         type: String,
         required: false // Icon image
     },
-    banner: {
-        type: String,
-        required: false // Page banner image
+    banners: {
+        type: [String],
+        default: [] // Array of banner images
     }
 }, {
     timestamps: true
