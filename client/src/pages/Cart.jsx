@@ -80,7 +80,11 @@ const Cart = () => {
                 // Login/create profile, then go straight to order
                 try {
                     await login(`91${phone}`);
-                } catch { /* profile creation might fail but OTP is verified */ }
+                } catch (loginErr) {
+                    // Profile creation may fail but OTP is verified on server;
+                    // order can still proceed with phone-based verification
+                    console.warn('Profile login during checkout failed:', loginErr.message);
+                }
                 setStep('order');
             } else {
                 setOtpError(data.message);

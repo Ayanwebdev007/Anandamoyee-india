@@ -120,7 +120,13 @@ const ProductDetails = () => {
             if (res.ok) {
                 setPhoneVerified(true);
                 // Create/find profile
-                try { await login(`91${phone}`); } catch { }
+                try {
+                    await login(`91${phone}`);
+                } catch (loginErr) {
+                    // Profile creation may fail but OTP is verified on server;
+                    // order can still proceed with phone-based verification
+                    console.warn('Profile login during checkout failed:', loginErr.message);
+                }
                 setStep('order');
             } else {
                 setOtpError(data.message);

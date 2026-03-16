@@ -318,13 +318,15 @@ app.post('/api/profile/login', async (req, res) => {
         if (!otpData || !otpData.verified) {
             return res.status(403).json({ message: 'Phone not verified. Please verify OTP first.' });
         }
-        otpStore.delete(phone);
 
         // Find existing customer or create new
         let customer = await Customer.findOne({ phone });
         if (!customer) {
             customer = await Customer.create({ phone });
         }
+
+        // Delete OTP only after successful DB operation
+        otpStore.delete(phone);
 
         res.json({ profile: { _id: customer._id, phone: customer.phone } });
     } catch (error) {
@@ -354,7 +356,6 @@ app.put('/api/profile/:id/phone', async (req, res) => {
         if (!otpData || !otpData.verified) {
             return res.status(403).json({ message: 'New phone not verified.' });
         }
-        otpStore.delete(newPhone);
 
         const customer = await Customer.findById(req.params.id);
         if (!customer) return res.status(404).json({ message: 'Profile not found' });
@@ -370,6 +371,9 @@ app.put('/api/profile/:id/phone', async (req, res) => {
 
         customer.phone = newPhone;
         await customer.save();
+
+        // Delete OTP only after successful DB operation
+        otpStore.delete(newPhone);
 
         res.json({ profile: { _id: customer._id, phone: customer.phone } });
     } catch (error) {
@@ -402,7 +406,6 @@ app.post('/api/orders', async (req, res) => {
             if (!otpData || !otpData.verified) {
                 return res.status(403).json({ message: 'Phone number not verified. Please verify OTP first.' });
             }
-            otpStore.delete(customerPhone);
         }
 
         // Find the product
@@ -422,6 +425,11 @@ app.post('/api/orders', async (req, res) => {
             customerPhone
         });
         const savedOrder = await order.save();
+
+        // Delete OTP only after successful order creation
+        if (!customerId) {
+            otpStore.delete(customerPhone);
+        }
 
         // Send WhatsApp messages via NextSMS API
         let whatsappSent = false;
@@ -478,7 +486,6 @@ app.post('/api/orders/cart', async (req, res) => {
             if (!otpData || !otpData.verified) {
                 return res.status(403).json({ message: 'Phone number not verified. Please verify OTP first.' });
             }
-            otpStore.delete(customerPhone);
         }
 
         // Look up all products and build order items
@@ -512,6 +519,11 @@ app.post('/api/orders/cart', async (req, res) => {
             customerPhone
         });
         const savedOrder = await order.save();
+
+        // Delete OTP only after successful order creation
+        if (!customerId) {
+            otpStore.delete(customerPhone);
+        }
 
         // WhatsApp notifications
         let whatsappSent = false;
