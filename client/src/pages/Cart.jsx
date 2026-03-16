@@ -83,7 +83,7 @@ const Cart = () => {
                 } catch (loginErr) {
                     // Profile creation may fail but OTP is verified on server;
                     // order can still proceed with phone-based verification
-                    console.warn('Profile login during checkout failed:', loginErr.message);
+                    console.warn('Profile login during checkout failed:', loginErr?.message || loginErr);
                 }
                 setStep('order');
             } else {
