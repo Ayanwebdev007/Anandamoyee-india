@@ -1,4 +1,3 @@
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { CartProvider } from './context/CartContext';
 import { ProfileProvider } from './context/ProfileContext';
@@ -34,16 +33,6 @@ const AnalyticsTracker = () => {
 const AppContent = () => {
     const location = useLocation();
     const isAdminPath = location.pathname.startsWith('/admin');
-
-    React.useEffect(() => {
-        const manifestElement = document.getElementById('app-manifest');
-        if (manifestElement) {
-            manifestElement.setAttribute(
-                'href',
-                isAdminPath ? '/admin-manifest.json' : '/manifest.json'
-            );
-        }
-    }, [isAdminPath]);
 
     return (
         <div className="min-h-screen bg-gray-50 font-sans">
