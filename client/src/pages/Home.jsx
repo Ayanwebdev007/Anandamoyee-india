@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import { Filter, ArrowUpDown, X, Loader2 } from 'lucide-react';
@@ -10,6 +10,8 @@ const Home = () => {
     const [categories, setCategories] = useState([]);
     const [banners, setBanners] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [selectedCategory, setSelectedCategory] = useState('All');
+    const [sortBy, setSortBy] = useState('Featured');
 
     useEffect(() => {
         const fetchData = async () => {
@@ -45,6 +47,26 @@ const Home = () => {
     const loadMore = () => {
         setVisibleCount(prev => prev + 4);
     };
+
+    const filteredProducts = useMemo(() => {
+        let result = [...allProducts];
+
+        // Apply Category Filter
+        if (selectedCategory !== 'All') {
+            result = result.filter(p => p.category === selectedCategory);
+        }
+
+        // Apply Sorting
+        if (sortBy === 'Price: Low to High') {
+            result.sort((a, b) => a.price - b.price);
+        } else if (sortBy === 'Price: High to Low') {
+            result.sort((a, b) => b.price - a.price);
+        } else if (sortBy === 'Newest First') {
+            result.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        }
+
+        return result;
+    }, [allProducts, selectedCategory, sortBy]);
 
     if (loading) {
         return (
@@ -205,10 +227,11 @@ const Home = () => {
                 </div>
             </section>
 
-            {/* 5. Product Listing Section */}
             <section className="mb-10">
-                <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-xl md:text-2xl font-bold text-gray-800 border-l-4 border-primary pl-3">Featured Products</h2>
+                <div className="sticky top-[100px] md:top-[82px] z-40 bg-gray-50 py-4 mb-4 flex items-center justify-between -mx-4 px-4 shadow-sm md:shadow-none">
+                    <h2 className="text-xl md:text-2xl font-bold text-gray-800 border-l-4 border-primary pl-3">
+                        {selectedCategory === 'All' ? 'Featured Products' : selectedCategory}
+                    </h2>
 
                     {/* Filters & Sorting Icons */}
                     <div className="flex gap-4 relative">
@@ -229,9 +252,18 @@ const Home = () => {
                                         <X size={14} className="cursor-pointer" onClick={() => setActiveDropdown(null)} />
                                     </div>
                                     <ul className="space-y-1">
-                                        <li className="px-2 py-1.5 hover:bg-yellow-50 rounded cursor-pointer text-sm text-gray-700">All Categories</li>
+                                        <li
+                                            onClick={() => { setSelectedCategory('All'); setActiveDropdown(null); }}
+                                            className={`px-2 py-1.5 rounded cursor-pointer text-sm font-medium transition ${selectedCategory === 'All' ? 'bg-yellow-100 text-black' : 'text-gray-700 hover:bg-yellow-50'}`}
+                                        >
+                                            All Categories
+                                        </li>
                                         {categories.map((cat) => (
-                                            <li key={cat._id} className="px-2 py-1.5 hover:bg-yellow-50 rounded cursor-pointer text-sm text-gray-700">
+                                            <li
+                                                key={cat._id}
+                                                onClick={() => { setSelectedCategory(cat.name); setActiveDropdown(null); }}
+                                                className={`px-2 py-1.5 rounded cursor-pointer text-sm font-medium transition ${selectedCategory === cat.name ? 'bg-yellow-100 text-black' : 'text-gray-700 hover:bg-yellow-50'}`}
+                                            >
                                                 {cat.name}
                                             </li>
                                         ))}
@@ -258,7 +290,11 @@ const Home = () => {
                                     </div>
                                     <ul className="space-y-1">
                                         {['Featured', 'Price: Low to High', 'Price: High to Low', 'Newest First'].map((opt) => (
-                                            <li key={opt} className="px-2 py-1.5 hover:bg-yellow-50 rounded cursor-pointer text-sm text-gray-700">
+                                            <li
+                                                key={opt}
+                                                onClick={() => { setSortBy(opt); setActiveDropdown(null); }}
+                                                className={`px-2 py-1.5 rounded cursor-pointer text-sm font-medium transition ${sortBy === opt ? 'bg-yellow-100 text-black' : 'text-gray-700 hover:bg-yellow-50'}`}
+                                            >
                                                 {opt}
                                             </li>
                                         ))}
@@ -271,12 +307,12 @@ const Home = () => {
 
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
                     {/* Display products based on visibleCount */}
-                    {allProducts.slice(0, visibleCount).map((product) => (
+                    {filteredProducts.slice(0, visibleCount).map((product) => (
                         <ProductCard key={product.id} product={product} />
                     ))}
                 </div>
 
-                {visibleCount < allProducts.length && (
+                {visibleCount < filteredProducts.length && (
                     <div className="mt-8 text-center">
                         <button
                             onClick={loadMore}

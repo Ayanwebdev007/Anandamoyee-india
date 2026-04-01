@@ -185,7 +185,7 @@ const ProductList = () => {
 
             <div className="container mx-auto px-4 mt-10">
                 {/* 3. Filter & Sort Bar (Home Style) */}
-                <div className="flex items-center justify-between mb-8">
+                <div className="sticky top-[100px] md:top-[82px] z-40 bg-gray-50 py-4 mb-4 flex items-center justify-between -mx-4 px-4 shadow-sm md:shadow-none">
                     <div className="flex items-center gap-3">
                         {/* Sort Dropdown */}
                         <div className="relative" onClick={(e) => e.stopPropagation()}>
