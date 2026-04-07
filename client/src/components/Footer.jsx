@@ -13,7 +13,7 @@ const Footer = () => {
         {
             icon: Headset,
             title: "Helpline Number",
-            desc: "+91 8069641033",
+            desc: "+91 9051430698",
             sub: "(Mon-Sun: 9am- 8pm)"
         },
         {
