@@ -424,7 +424,7 @@ app.post('/api/orders', async (req, res) => {
         const savedOrder = await order.save();
 
         // Send WhatsApp messages via NextSMS API
-        let whatsappSent = false;
+        let whatsappSent = true;
 
         // Notify owner
         const ownerPhone = await Setting.get('owner_phone') || '';
@@ -437,7 +437,7 @@ app.post('/api/orders', async (req, res) => {
                 `📱 *Customer Phone:* ${customerPhone}\n` +
                 `📅 *Date:* ${new Date().toLocaleString('en-IN')}\n\n` +
                 `Order ID: ${savedOrder._id}`;
-            await whatsapp.sendMessage(ownerPhone, ownerMessage);
+            whatsapp.sendMessage(ownerPhone, ownerMessage).catch(err => console.error('Owner WhatsApp Error:', err));
         }
 
         // Send confirmation to customer
@@ -447,8 +447,7 @@ app.post('/api/orders', async (req, res) => {
             `📊 *Quantity:* ${quantity}\n` +
             `💵 *Total:* ₹${product.price * quantity}\n\n` +
             `We will contact you shortly to confirm delivery details.`;
-        const result = await whatsapp.sendMessage(customerPhone, customerMessage);
-        whatsappSent = result.success;
+        whatsapp.sendMessage(customerPhone, customerMessage).catch(err => console.error('Customer WhatsApp Error:', err));
 
         res.status(201).json({
             order: savedOrder,
@@ -530,7 +529,7 @@ app.post('/api/orders/cart', async (req, res) => {
                 `📱 *Customer:* ${customerPhone}\n` +
                 `📅 *Date:* ${new Date().toLocaleString('en-IN')}\n\n` +
                 `Order ID: ${savedOrder._id}`;
-            await whatsapp.sendMessage(ownerPhone, ownerMessage);
+            whatsapp.sendMessage(ownerPhone, ownerMessage).catch(err => console.error('Owner Cart WhatsApp Error:', err));
         }
 
         // Customer confirmation
@@ -539,8 +538,8 @@ app.post('/api/orders/cart', async (req, res) => {
             `📦 *Items:*\n${itemsList}\n\n` +
             `💵 *Total:* ₹${totalAmount.toLocaleString()}\n\n` +
             `We will contact you shortly to confirm delivery details.`;
-        const result = await whatsapp.sendMessage(customerPhone, customerMessage);
-        whatsappSent = result.success;
+        whatsapp.sendMessage(customerPhone, customerMessage).catch(err => console.error('Customer Cart WhatsApp Error:', err));
+        whatsappSent = true;
 
         res.status(201).json({
             order: savedOrder,
