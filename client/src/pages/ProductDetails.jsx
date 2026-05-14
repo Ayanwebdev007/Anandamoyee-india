@@ -4,6 +4,7 @@ import { Loader2, Minus, Plus, ShoppingCart, ArrowLeft, CheckCircle2, AlertCircl
 import ProductCard from '../components/ProductCard';
 import { useCart } from '../context/CartContext';
 import { useProfile } from '../context/ProfileContext';
+import SEO from '../components/SEO';
 
 const ProductDetails = () => {
     const { id } = useParams();
@@ -222,6 +223,13 @@ const ProductDetails = () => {
 
     return (
         <div className="container mx-auto px-4 py-6 max-w-6xl">
+            <SEO 
+                title={product.name}
+                description={product.description?.substring(0, 160) || `Buy ${product.name} at Anandamoyee India. High quality ${product.category} machinery.`}
+                image={product.image}
+                url={`/product/${id}`}
+                type="product"
+            />
             {/* Breadcrumb */}
             <Link to="/" className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-blue-600 mb-6 transition-colors">
                 <ArrowLeft size={16} />

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import { Filter, ArrowUpDown, X, Loader2 } from 'lucide-react';
+import SEO from '../components/SEO';
 
 const Home = () => {
     const [activeDropdown, setActiveDropdown] = useState(null); // 'filter', 'sort', or null
@@ -79,6 +80,11 @@ const Home = () => {
 
     return (
         <div className="container mx-auto px-4 py-6" onClick={() => setActiveDropdown(null)}>
+            <SEO 
+                title="Leading Rice Mill Machinery & Innovation" 
+                description="Anandamoyee India provides state-of-the-art rice mill machinery, flour mills, and pulverizers to empower farmers and millers with sustainable technology."
+                keywords="rice mill machinery, flour mill, pulverizer, agriculture equipment India, Anandamoyee India"
+            />
             {/* 1. Categories (Mobile: Top Slider, Desktop: Below Banners) */}
 
 

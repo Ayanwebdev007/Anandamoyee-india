@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Minus, Plus, Trash2, ShoppingCart, ArrowLeft, Loader2, CheckCircle2, AlertCircle, X, KeyRound, ShoppingBag, Edit3 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useProfile } from '../context/ProfileContext';
+import SEO from '../components/SEO';
 
 const Cart = () => {
     const { cartItems, cartCount, cartTotal, updateQuantity, removeFromCart, clearCart } = useCart();
@@ -153,6 +154,11 @@ const Cart = () => {
 
     return (
         <div className="container mx-auto px-4 py-6 max-w-6xl">
+            <SEO 
+                title="Shopping Cart" 
+                noindex={true}
+                url="/cart"
+            />
             {/* Header */}
             <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">

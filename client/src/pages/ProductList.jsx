@@ -15,6 +15,7 @@ import {
     ArrowUpDown
 } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
+import SEO from '../components/SEO';
 
 const ProductList = () => {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -122,6 +123,14 @@ const ProductList = () => {
 
     return (
         <div className="bg-gray-50 min-h-screen pb-20" onClick={() => setActiveDropdown(null)}>
+            <SEO 
+                title={selectedCategory === 'All' ? 'Our Products' : `${selectedCategory} Collection`}
+                description={selectedCategory === 'All' 
+                    ? "Browse our complete collection of rice mill machinery, flour mills, and industrial equipment."
+                    : `Explore our premium range of ${selectedCategory}. High quality machinery for farmers and millers.`
+                }
+                url={`/products${selectedCategory !== 'All' ? `?category=${selectedCategory}` : ''}`}
+            />
             {/* 1. Category Header (Blue Section) - Compact & Premium */}
             <div className="bg-[#0400fe] py-8 px-4 text-center">
                 <h1 className="text-2xl md:text-4xl font-black text-white uppercase tracking-tight">

@@ -8,6 +8,7 @@ import galleryNew1 from '../assets/WhatsApp Image 2026-02-25 at 12.19.13 PM (1).
 import galleryNew2 from '../assets/WhatsApp Image 2026-02-25 at 12.19.13 PM.jpeg';
 import galleryNew3 from '../assets/WhatsApp Image 2026-02-25 at 12.19.14 PM.jpeg';
 import galleryNew4 from '../assets/WhatsApp Image 2026-02-25 at 12.23.59 PM.jpeg';
+import SEO from '../components/SEO';
 
 const AboutUs = () => {
     const galleryImages = [
@@ -20,6 +21,11 @@ const AboutUs = () => {
 
     return (
         <div className="bg-white">
+            <SEO 
+                title="About Us" 
+                description="Learn about Anandamoyee India's journey in innovating rice mill machinery and our commitment to empowering farmers with state-of-the-art technology."
+                url="/about"
+            />
             {/* Hero Section - Single Full Image */}
             <section className="w-full overflow-hidden">
                 <img

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Mail, Phone, MapPin, Send, Facebook, Instagram, Twitter, MessageCircle, Clock, Globe } from 'lucide-react';
 import contactHero from '../assets/istockphoto-1309084016-612x612.jpg';
+import SEO from '../components/SEO';
 
 const ContactUs = () => {
     const [formData, setFormData] = useState({
@@ -44,6 +45,11 @@ const ContactUs = () => {
 
     return (
         <div className="bg-white min-h-screen overflow-x-hidden">
+            <SEO 
+                title="Contact Us" 
+                description="Get in touch with Anandamoyee India for enquiries about rice mill machinery, flour mills, and industrial equipment. Our factory is located in Howrah, West Bengal."
+                url="/contact"
+            />
             {/* Hero Section */}
             <section className="relative h-[50vh] md:h-[70vh] flex items-end overflow-hidden">
                 <img
