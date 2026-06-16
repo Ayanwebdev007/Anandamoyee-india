@@ -130,6 +130,15 @@ const ProductList = () => {
                     : `Explore our premium range of ${selectedCategory}. High quality machinery for farmers and millers.`
                 }
                 url={`/products${selectedCategory !== 'All' ? `?category=${selectedCategory}` : ''}`}
+                structuredData={{
+                    "@context": "https://schema.org",
+                    "@type": "CollectionPage",
+                    "name": selectedCategory === 'All' ? 'Our Products' : `${selectedCategory} Collection`,
+                    "description": selectedCategory === 'All' 
+                        ? "Complete collection of rice mill machinery, flour mills, and industrial equipment."
+                        : `Premium range of ${selectedCategory} machinery.`,
+                    "url": `https://www.anandamoyeeindia.com/products${selectedCategory !== 'All' ? `?category=${selectedCategory}` : ''}`
+                }}
             />
             {/* 1. Category Header (Blue Section) - Compact & Premium */}
             <div className="bg-[#0400fe] py-8 px-4 text-center">

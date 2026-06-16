@@ -772,6 +772,51 @@ app.post('/api/settings/whatsapp/test', async (req, res) => {
     }
 });
 
+// Dynamic Sitemap Route
+app.get('/api/sitemap.xml', async (req, res) => {
+    try {
+        const products = await Product.find().select('_id updatedAt');
+        const baseUrl = 'https://www.anandamoyeeindia.com';
+        
+        let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
+        xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+        
+        // Add home page
+        xml += '  <url>\n';
+        xml += `    <loc>${baseUrl}/</loc>\n`;
+        xml += '    <changefreq>daily</changefreq>\n';
+        xml += '    <priority>1.0</priority>\n';
+        xml += '  </url>\n';
+
+        // Add products page
+        xml += '  <url>\n';
+        xml += `    <loc>${baseUrl}/products</loc>\n`;
+        xml += '    <changefreq>daily</changefreq>\n';
+        xml += '    <priority>0.9</priority>\n';
+        xml += '  </url>\n';
+
+        // Add individual products
+        for (const product of products) {
+            xml += '  <url>\n';
+            xml += `    <loc>${baseUrl}/product/${product._id}</loc>\n`;
+            if (product.updatedAt) {
+                xml += `    <lastmod>${product.updatedAt.toISOString()}</lastmod>\n`;
+            }
+            xml += '    <changefreq>weekly</changefreq>\n';
+            xml += '    <priority>0.8</priority>\n';
+            xml += '  </url>\n';
+        }
+
+        xml += '</urlset>';
+
+        res.header('Content-Type', 'application/xml');
+        res.send(xml);
+    } catch (error) {
+        console.error('Sitemap generation error:', error);
+        res.status(500).send('Error generating sitemap');
+    }
+});
+
 // For initial testing/seeding
 app.post('/api/products/seed', async (req, res) => {
     try {

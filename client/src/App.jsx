@@ -22,6 +22,7 @@ import ManageAnalytics from './pages/admin/ManageAnalytics';
 import AboutUs from './pages/AboutUs';
 import ContactUs from './pages/ContactUs';
 import Footer from './components/Footer';
+import NotFound from './pages/NotFound';
 import ProtectedRoute from './components/ProtectedRoute';
 import useAnalytics from './hooks/useAnalytics';
 
@@ -46,6 +47,9 @@ const AppContent = () => {
                 <Route path="/profile" element={<><Navbar /><Profile /></>} />
                 <Route path="/about" element={<><Navbar /><AboutUs /></>} />
                 <Route path="/contact" element={<><Navbar /><ContactUs /></>} />
+                
+                {/* Catch-all 404 Route */}
+                <Route path="*" element={<><Navbar /><NotFound /></>} />
 
                 {/* Admin Login (public) */}
                 <Route path="/admin/login" element={<AdminLogin />} />

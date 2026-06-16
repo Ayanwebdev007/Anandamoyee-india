@@ -3,6 +3,5 @@ Allow: /
 Disallow: /admin/
 Disallow: /cart
 Disallow: /profile
-Disallow: /checkout
 
-Sitemap: https://www.anandamoyeeindia.com/sitemap.xml
+Sitemap: https://www.anandamoyeeindia.com/api/sitemap.xml

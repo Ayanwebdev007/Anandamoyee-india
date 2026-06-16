@@ -221,6 +221,27 @@ const ProductDetails = () => {
         hasFeatures && { id: 'features', label: 'Features' },
     ].filter(Boolean);
 
+    const productSchema = {
+        "@context": "https://schema.org/",
+        "@type": "Product",
+        "name": product.name,
+        "image": allImages,
+        "description": product.description || `Buy ${product.name} at Anandamoyee India. High quality ${product.category} machinery.`,
+        "sku": product.modelNumber || product._id || product.id || id,
+        "brand": {
+            "@type": "Brand",
+            "name": "Anandamoyee India"
+        },
+        "offers": {
+            "@type": "Offer",
+            "url": `https://www.anandamoyeeindia.com/product/${id}`,
+            "priceCurrency": "INR",
+            "price": product.price,
+            "availability": "https://schema.org/InStock",
+            "itemCondition": "https://schema.org/NewCondition"
+        }
+    };
+
     return (
         <div className="container mx-auto px-4 py-6 max-w-6xl">
             <SEO 
@@ -229,6 +250,7 @@ const ProductDetails = () => {
                 image={product.image}
                 url={`/product/${id}`}
                 type="product"
+                structuredData={productSchema}
             />
             {/* Breadcrumb */}
             <Link to="/" className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-blue-600 mb-6 transition-colors">

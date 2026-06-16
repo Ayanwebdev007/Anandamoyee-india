@@ -8,7 +8,8 @@ const SEO = ({
     image, 
     url, 
     type = 'website',
-    noindex = false 
+    noindex = false,
+    structuredData
 }) => {
     const siteTitle = 'Anandamoyee India';
     const fullTitle = title ? `${title} | ${siteTitle}` : siteTitle;
@@ -43,6 +44,13 @@ const SEO = ({
 
             {/* Canonical link */}
             <link rel="canonical" href={fullUrl} />
+
+            {/* JSON-LD Structured Data */}
+            {structuredData && (
+                <script type="application/ld+json">
+                    {JSON.stringify(structuredData)}
+                </script>
+            )}
         </Helmet>
     );
 };

@@ -84,6 +84,14 @@ const Home = () => {
                 title="Leading Rice Mill Machinery & Innovation" 
                 description="Anandamoyee India provides state-of-the-art rice mill machinery, flour mills, and pulverizers to empower farmers and millers with sustainable technology."
                 keywords="rice mill machinery, flour mill, pulverizer, agriculture equipment India, Anandamoyee India"
+                structuredData={{
+                    "@context": "https://schema.org",
+                    "@type": "Organization",
+                    "name": "Anandamoyee India",
+                    "url": "https://www.anandamoyeeindia.com",
+                    "logo": "https://www.anandamoyeeindia.com/logo.png",
+                    "description": "Leading manufacturer of rice mill machinery, flour mills, and agricultural equipment in India."
+                }}
             />
             {/* 1. Categories (Mobile: Top Slider, Desktop: Below Banners) */}
 
