@@ -6,6 +6,7 @@ import { useProfile } from '../context/ProfileContext';
 
 import logo from '../assets/ai logo new.png';
 import wpLogo from '../assets/wp logo.png';
+import { optimizeImage } from '../utils/imageOptimizer';
 
 const Navbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -133,7 +134,7 @@ const Navbar = () => {
                         <span>+91 9477432899</span>
                     </a>
                     <a href="https://wa.me/919051430698" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-[#25D366] transition whitespace-nowrap">
-                        <img src={wpLogo} alt="WhatsApp" width="24" height="24" className="h-6 w-6 object-contain brightness-0 invert" />
+                        <img src={optimizeImage(wpLogo, 48)} alt="WhatsApp" width="24" height="24" className="h-6 w-6 object-contain brightness-0 invert" />
                         <span>+91 9051430698</span>
                     </a>
                     <a href="mailto:prasenjitshaw68@gmail.com" className="hidden md:flex items-center gap-2 hover:text-secondary transition whitespace-nowrap">
@@ -153,7 +154,7 @@ const Navbar = () => {
                                 <Menu className="h-6 w-6" />
                             </button>
                             <Link to="/" className="flex items-center gap-2">
-                                <img src={logo} alt="Anandamoyee India Logo" width="153" height="48" className="h-10 md:h-12 w-auto object-contain" />
+                                <img src={optimizeImage(logo, 160)} alt="Anandamoyee India Logo" width="153" height="48" className="h-10 md:h-12 w-auto object-contain" style={{ aspectRatio: '153/48' }} />
                                 <span className="text-lg md:text-2xl font-bold tracking-tighter uppercase text-brand-blue">Anandamoyee India</span>
                             </Link>
                         </div>
@@ -227,7 +228,7 @@ const Navbar = () => {
                         {/* Drawer Header */}
                         <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-primary">
                             <div className="flex items-center gap-2">
-                                <img src={logo} alt="Logo" className="h-8 w-auto" />
+                                <img src={optimizeImage(logo, 110)} alt="Logo" width="102" height="32" className="h-8 w-auto" style={{ aspectRatio: '102/32' }} />
                                 <span className="text-lg font-bold tracking-tight text-brand-blue">Anandamoyee</span>
                             </div>
                             <button

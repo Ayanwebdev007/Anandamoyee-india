@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Lock, User, ShieldCheck } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import logo from '../../assets/ai logo new.png';
+import { optimizeImage } from '../../utils/imageOptimizer';
 
 const AdminLogin = () => {
     const [username, setUsername] = useState('');
@@ -39,7 +40,7 @@ const AdminLogin = () => {
                 {/* Logo */}
                 <div className="relative flex items-center gap-4">
                     <div className="w-12 h-12 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center p-1.5">
-                        <img src={logo} alt="Logo" className="w-full h-full object-contain" />
+                        <img src={optimizeImage(logo, 48)} alt="Logo" width="48" height="48" className="w-full h-full object-contain" />
                     </div>
                     <div>
                         <h1 className="text-white font-bold text-xl tracking-tighter uppercase leading-tight">
@@ -79,7 +80,7 @@ const AdminLogin = () => {
                 {/* Mobile logo */}
                 <div className="lg:hidden flex flex-col items-center mb-8">
                     <div className="w-14 h-14 rounded-2xl bg-brand-blue/5 border border-brand-blue/10 flex items-center justify-center p-2 mb-3">
-                        <img src={logo} alt="Logo" className="w-full h-full object-contain" />
+                        <img src={optimizeImage(logo, 56)} alt="Logo" width="56" height="56" className="w-full h-full object-contain" />
                     </div>
                     <h1 className="font-bold text-xl tracking-tighter uppercase text-brand-blue">Anandamoyee India</h1>
                 </div>

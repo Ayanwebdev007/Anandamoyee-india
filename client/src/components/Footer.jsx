@@ -50,7 +50,7 @@ const Footer = () => {
     ];
 
     return (
-        <footer className="relative mt-auto">
+        <footer className="relative mt-auto" style={{ contentVisibility: 'auto', containIntrinsicSize: '0 800px' }}>
             {/* Trust Benefits Section - Premium Yellow */}
             <div className="bg-primary py-12 md:py-16 border-t-8 border-black/5">
                 <div className="container mx-auto px-4">
@@ -78,7 +78,7 @@ const Footer = () => {
                         {/* Brand Section */}
                         <div className="space-y-8">
                             <Link to="/" className="inline-block hover:scale-105 transition-transform">
-                                <img src={optimizeImage(logo, 300)} alt="Anandamoyee India" width="200" height="60" loading="lazy" className="h-20 md:h-24 w-auto" />
+                                <img src={optimizeImage(logo, 300)} alt="Anandamoyee India" width="200" height="60" loading="lazy" className="h-20 md:h-24 w-auto" style={{ aspectRatio: '200/60' }} />
                             </Link>
                             <p className="text-white/70 text-sm font-medium leading-relaxed max-w-sm">
                                 Leading the way in rice mill machinery innovation. We empower farmers and millers with state-of-the-art technology for a sustainable future.
@@ -136,6 +136,7 @@ const Footer = () => {
                                     height="180"
                                     loading="lazy"
                                     className="w-full max-w-[180px] h-auto object-contain brightness-110 contrast-110 hover:scale-110 transition-transform duration-700"
+                                    style={{ aspectRatio: '1/1' }}
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                             </div>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Phone } from 'lucide-react';
 import wpLogoWhite from '../assets/wp logo white.png';
+import { optimizeImage } from '../utils/imageOptimizer';
 
 const StickyContact = () => {
     return (
@@ -13,7 +14,7 @@ const StickyContact = () => {
                 className="bg-[#25D366] hover:bg-[#128C7E] text-white p-1 rounded-full shadow-lg transition-transform hover:scale-110 flex items-center justify-center h-12 w-12 md:h-14 md:w-14"
                 aria-label="Chat on WhatsApp"
             >
-                <img src={wpLogoWhite} alt="WhatsApp" className="h-10 w-10 md:h-12 md:w-12 object-contain" />
+                <img src={optimizeImage(wpLogoWhite, 56)} alt="WhatsApp" width="48" height="48" className="h-10 w-10 md:h-12 md:w-12 object-contain" />
             </a>
 
             {/* Call Button */}

@@ -268,7 +268,7 @@ const ProductDetails = () => {
                     <div className="p-4 md:p-6 border-b md:border-b-0 md:border-r border-gray-100">
                         <div className="aspect-square rounded-xl overflow-hidden bg-gray-50 mb-3">
                             <img
-                                src={optimizeImage(allImages[selectedImage] || "https://placehold.co/600x600/png?text=Product", 800)}
+                                src={optimizeImage(allImages[selectedImage] || "https://placehold.co/600x600/png?text=Product", 600)}
                                 alt={product.name}
                                 fetchpriority="high"
                                 width="600"

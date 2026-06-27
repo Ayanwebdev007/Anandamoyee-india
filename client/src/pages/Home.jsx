@@ -117,21 +117,21 @@ const Home = () => {
                                             {banner.link ? (
                                                 <Link to={banner.link}>
                                                     <img
-                                                        src={optimizeImage(banner.imageUrl, 800)}
+                                                        src={optimizeImage(banner.imageUrl, 700)}
                                                         alt={banner.altText || banner.title}
                                                         fetchpriority={index === 0 ? "high" : "auto"}
-                                                        width="800"
-                                                        height="400"
+                                                        width="700"
+                                                        height="350"
                                                         className="w-full h-full object-cover"
                                                     />
                                                 </Link>
                                             ) : (
                                                 <img
-                                                    src={optimizeImage(banner.imageUrl, 800)}
+                                                    src={optimizeImage(banner.imageUrl, 700)}
                                                     alt={banner.altText || banner.title}
                                                     fetchpriority={index === 0 ? "high" : "auto"}
-                                                    width="800"
-                                                    height="400"
+                                                    width="700"
+                                                    height="350"
                                                     className="w-full h-full object-cover"
                                                 />
                                             )}
@@ -148,21 +148,21 @@ const Home = () => {
                                     {banner.link ? (
                                         <Link to={banner.link} className="block h-full w-full">
                                             <img
-                                                src={optimizeImage(banner.imageUrl, 1000)}
+                                                src={optimizeImage(banner.imageUrl, 700)}
                                                 alt={banner.altText || banner.title}
                                                 fetchpriority={index === 0 ? "high" : "auto"}
-                                                width="1000"
-                                                height="500"
+                                                width="700"
+                                                height="350"
                                                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                             />
                                         </Link>
                                     ) : (
                                         <img
-                                            src={optimizeImage(banner.imageUrl, 1000)}
+                                            src={optimizeImage(banner.imageUrl, 700)}
                                             alt={banner.altText || banner.title}
                                             fetchpriority={index === 0 ? "high" : "auto"}
-                                            width="1000"
-                                            height="500"
+                                            width="700"
+                                            height="350"
                                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                         />
                                     )}
@@ -243,7 +243,7 @@ const Home = () => {
                         >
                             <div className="h-20 w-20 md:h-32 md:w-32 bg-white rounded-full border border-gray-100 flex items-center justify-center mb-3 md:mb-4 shadow-sm overflow-hidden group-hover:shadow-md group-hover:border-primary/20 transition-all duration-300">
                                 {cat.image ? (
-                                    <img src={optimizeImage(cat.image, 250)} alt={cat.name} loading="lazy" width="128" height="128" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                    <img src={optimizeImage(cat.image, 150)} alt={cat.name} loading="lazy" width="140" height="140" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                                 ) : (
                                     <span className="text-xl md:text-3xl font-bold text-primary">{cat.name.charAt(0)}</span>
                                 )}

@@ -9,6 +9,7 @@ import galleryNew2 from '../assets/WhatsApp Image 2026-02-25 at 12.19.13 PM.jpeg
 import galleryNew3 from '../assets/WhatsApp Image 2026-02-25 at 12.19.14 PM.jpeg';
 import galleryNew4 from '../assets/WhatsApp Image 2026-02-25 at 12.23.59 PM.jpeg';
 import SEO from '../components/SEO';
+import { optimizeImage } from '../utils/imageOptimizer';
 
 const AboutUs = () => {
     const galleryImages = [
@@ -29,8 +30,11 @@ const AboutUs = () => {
             {/* Hero Section - Single Full Image */}
             <section className="w-full overflow-hidden">
                 <img
-                    src={heroImage}
+                    src={optimizeImage(heroImage, 1200)}
                     alt="About Us Hero"
+                    width="1200"
+                    height="400"
+                    fetchpriority="high"
                     className="w-full h-auto block"
                 />
             </section>
@@ -130,8 +134,11 @@ const AboutUs = () => {
                                 className={`group relative overflow-hidden rounded-[2.5rem] bg-gray-100 shadow-xl transition-all duration-700 hover:shadow-2xl ${index % 3 === 0 ? 'lg:row-span-2 aspect-[3/4]' : 'aspect-square sm:aspect-video'}`}
                             >
                                 <img
-                                    src={img.url}
+                                    src={optimizeImage(img.url, 600)}
                                     alt={img.title}
+                                    loading="lazy"
+                                    width="600"
+                                    height="400"
                                     className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                                 />
                                 {/* Glassmorphism Overlay */}

@@ -3,6 +3,10 @@
 
 <head>
   <meta charset="UTF-8" />
+  <link rel="preconnect" href="https://wsrv.nl" crossorigin />
+  <link rel="dns-prefetch" href="https://wsrv.nl" />
+  <link rel="preconnect" href="https://edusathi.s3.ap-south-1.amazonaws.com" crossorigin />
+  <link rel="dns-prefetch" href="https://edusathi.s3.ap-south-1.amazonaws.com" />
   <link rel="icon" type="image/svg+xml" href="/vite.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Anandamoyee India | Rice Mill Machinery Innovation</title>
@@ -50,7 +54,13 @@
 </head>
 
 <body>
-  <div id="root"></div>
+  <div id="root">
+    <!-- Critical inline loading state — eliminates white screen during JS parse -->
+    <div style="min-height:100vh;background:#f9fafb;display:flex;align-items:center;justify-content:center">
+      <div style="width:48px;height:48px;border:3px solid #e5e7eb;border-top-color:#FFD700;border-radius:50%;animation:spin 0.8s linear infinite"></div>
+    </div>
+  </div>
+  <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
   <script type="module" src="/src/main.jsx"></script>
 </body>
 

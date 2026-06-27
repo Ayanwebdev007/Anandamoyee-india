@@ -3,6 +3,7 @@ import { Link, Outlet, useLocation } from 'react-router-dom';
 import { LayoutDashboard, Package, Tags, ArrowLeft, LogOut, Image as ImageIcon, ShoppingCart, Settings, MessageSquare, Menu, X, Activity } from 'lucide-react';
 import logo from '../../assets/ai logo new.png';
 import { useAuth } from '../../context/AuthContext';
+import { optimizeImage } from '../../utils/imageOptimizer';
 
 const AdminLayout = () => {
     const location = useLocation();
@@ -42,7 +43,7 @@ const AdminLayout = () => {
                 <div className="p-6 border-b border-gray-100 bg-gray-50/50 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <div className="w-12 h-12 rounded-xl bg-white shadow-sm border border-gray-100 flex items-center justify-center p-1.5">
-                            <img src={logo} alt="Logo" className="w-full h-full object-contain" />
+                            <img src={optimizeImage(logo, 48)} alt="Logo" width="48" height="48" className="w-full h-full object-contain" />
                         </div>
                         <div>
                             <h2 className="text-base font-bold tracking-tighter uppercase text-brand-blue leading-tight">Anandamoyee India</h2>
@@ -115,7 +116,7 @@ const AdminLayout = () => {
                         <span className="font-bold tracking-tighter uppercase text-brand-blue">Anandamoyee India</span>
                     </div>
                     <div className="w-8 h-8 rounded-full bg-brand-blue/10 flex items-center justify-center">
-                        <img src={logo} alt="Logo" className="w-6 h-6 object-contain" />
+                        <img src={optimizeImage(logo, 24)} alt="Logo" width="24" height="24" className="w-6 h-6 object-contain" />
                     </div>
                 </header>
 

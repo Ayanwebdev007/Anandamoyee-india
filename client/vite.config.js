@@ -16,5 +16,17 @@ export default defineConfig({
         changeOrigin: true,
       }
     }
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Split React core (~140 KiB) — cached across all pages
+          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+          // Split Swiper (~60 KiB) — only needed on Home/ProductList pages
+          'vendor-swiper': ['swiper'],
+        }
+      }
+    }
   }
 })
