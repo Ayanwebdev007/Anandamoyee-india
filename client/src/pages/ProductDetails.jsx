@@ -5,6 +5,7 @@ import ProductCard from '../components/ProductCard';
 import { useCart } from '../context/CartContext';
 import { useProfile } from '../context/ProfileContext';
 import SEO from '../components/SEO';
+import { optimizeImage } from '../utils/imageOptimizer';
 
 const ProductDetails = () => {
     const { id } = useParams();
@@ -267,8 +268,11 @@ const ProductDetails = () => {
                     <div className="p-4 md:p-6 border-b md:border-b-0 md:border-r border-gray-100">
                         <div className="aspect-square rounded-xl overflow-hidden bg-gray-50 mb-3">
                             <img
-                                src={allImages[selectedImage] || "https://placehold.co/600x600/png?text=Product"}
+                                src={optimizeImage(allImages[selectedImage] || "https://placehold.co/600x600/png?text=Product", 800)}
                                 alt={product.name}
+                                fetchpriority="high"
+                                width="600"
+                                height="600"
                                 className="w-full h-full object-cover"
                             />
                         </div>
@@ -283,7 +287,7 @@ const ProductDetails = () => {
                                             ? 'border-[#0400fe] ring-2 ring-blue-100'
                                             : 'border-gray-200 hover:border-gray-400'}`}
                                     >
-                                        <img src={img} alt={`View ${i + 1}`} className="w-full h-full object-cover" />
+                                        <img src={optimizeImage(img, 150)} alt={`View ${i + 1}`} width="64" height="64" className="w-full h-full object-cover" />
                                     </button>
                                 ))}
                             </div>

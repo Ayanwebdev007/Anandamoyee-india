@@ -1,6 +1,7 @@
 import React from 'react';
 import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { optimizeImage } from '../utils/imageOptimizer';
 
 const ProductCard = ({ product }) => {
     const productId = product.id || product._id;
@@ -12,8 +13,11 @@ const ProductCard = ({ product }) => {
         <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition group h-full flex flex-col">
             <Link to={`/product/${productId}`} className="block relative aspect-square overflow-hidden bg-gray-50">
                 <img
-                    src={product.image || "https://placehold.co/400x400/png?text=Product"}
+                    src={optimizeImage(product.image || "https://placehold.co/400x400/png?text=Product", 500)}
                     alt={product.name}
+                    loading="lazy"
+                    width="400"
+                    height="400"
                     className="w-full h-full object-cover group-hover:scale-110 transition duration-500"
                 />
             </Link>

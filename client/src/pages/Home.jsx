@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import { Filter, ArrowUpDown, X, Loader2 } from 'lucide-react';
 import SEO from '../components/SEO';
+import { optimizeImage } from '../utils/imageOptimizer';
 
 const Home = () => {
     const [activeDropdown, setActiveDropdown] = useState(null); // 'filter', 'sort', or null
@@ -110,21 +111,27 @@ const Home = () => {
                                 autoplay-delay="2000"
                                 autoplay-disable-on-interaction="false"
                             >
-                                {banners.map((banner) => (
+                                {banners.map((banner, index) => (
                                     <swiper-slide key={banner._id}>
                                         <div className="rounded-lg shadow-md overflow-hidden h-48 relative bg-gray-200">
                                             {banner.link ? (
                                                 <Link to={banner.link}>
                                                     <img
-                                                        src={banner.imageUrl}
+                                                        src={optimizeImage(banner.imageUrl, 800)}
                                                         alt={banner.altText || banner.title}
+                                                        fetchpriority={index === 0 ? "high" : "auto"}
+                                                        width="800"
+                                                        height="400"
                                                         className="w-full h-full object-cover"
                                                     />
                                                 </Link>
                                             ) : (
                                                 <img
-                                                    src={banner.imageUrl}
+                                                    src={optimizeImage(banner.imageUrl, 800)}
                                                     alt={banner.altText || banner.title}
+                                                    fetchpriority={index === 0 ? "high" : "auto"}
+                                                    width="800"
+                                                    height="400"
                                                     className="w-full h-full object-cover"
                                                 />
                                             )}
@@ -136,20 +143,26 @@ const Home = () => {
 
                         {/* Desktop View: Grid (First 2 banners or more logic if needed) */}
                         <div className="hidden md:grid grid-cols-2 gap-4">
-                            {banners.slice(0, 2).map((banner) => (
+                            {banners.slice(0, 2).map((banner, index) => (
                                 <div key={banner._id} className="rounded-lg shadow-md overflow-hidden h-64 relative bg-gray-200 group">
                                     {banner.link ? (
                                         <Link to={banner.link} className="block h-full w-full">
                                             <img
-                                                src={banner.imageUrl}
+                                                src={optimizeImage(banner.imageUrl, 1000)}
                                                 alt={banner.altText || banner.title}
+                                                fetchpriority={index === 0 ? "high" : "auto"}
+                                                width="1000"
+                                                height="500"
                                                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                             />
                                         </Link>
                                     ) : (
                                         <img
-                                            src={banner.imageUrl}
+                                            src={optimizeImage(banner.imageUrl, 1000)}
                                             alt={banner.altText || banner.title}
+                                            fetchpriority={index === 0 ? "high" : "auto"}
+                                            width="1000"
+                                            height="500"
                                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                         />
                                     )}

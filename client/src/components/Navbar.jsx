@@ -133,7 +133,7 @@ const Navbar = () => {
                         <span>+91 9477432899</span>
                     </a>
                     <a href="https://wa.me/919051430698" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-[#25D366] transition whitespace-nowrap">
-                        <img src={wpLogo} alt="WhatsApp" className="h-6 w-6 object-contain brightness-0 invert" />
+                        <img src={wpLogo} alt="WhatsApp" width="24" height="24" className="h-6 w-6 object-contain brightness-0 invert" />
                         <span>+91 9051430698</span>
                     </a>
                     <a href="mailto:prasenjitshaw68@gmail.com" className="hidden md:flex items-center gap-2 hover:text-secondary transition whitespace-nowrap">
@@ -153,7 +153,7 @@ const Navbar = () => {
                                 <Menu className="h-6 w-6" />
                             </button>
                             <Link to="/" className="flex items-center gap-2">
-                                <img src={logo} alt="Anandamoyee India Logo" className="h-10 md:h-12 w-auto object-contain" />
+                                <img src={logo} alt="Anandamoyee India Logo" width="153" height="48" className="h-10 md:h-12 w-auto object-contain" />
                                 <span className="text-lg md:text-2xl font-bold tracking-tighter uppercase text-brand-blue">Anandamoyee India</span>
                             </Link>
                         </div>
