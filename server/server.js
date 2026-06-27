@@ -1073,24 +1073,24 @@ app.post('/api/products/seed', async (req, res) => {
 
 // --- HOSTINGER VPS / MONOLITHIC STATIC SERVING & SPA FALLBACK ---
 const clientDistPath = path.join(__dirname, '../client/dist');
-if (fs.existsSync(clientDistPath)) {
-    // Serve static files (CSS, JS, images) from client/dist
-    app.use(express.static(clientDistPath));
+app.use(express.static(clientDistPath));
 
-    // Catch-all SPA routing fallback (runs AFTER all API and SEO routes)
-    app.get('*', async (req, res) => {
-        if (req.path.startsWith('/api')) {
-            return res.status(404).json({ message: 'API endpoint not found' });
-        }
-        try {
-            const baseHtml = await getBaseIndexHtml();
-            res.header('Content-Type', 'text/html; charset=utf-8');
-            res.send(baseHtml);
-        } catch (err) {
-            res.sendFile(path.join(clientDistPath, 'index.html'));
-        }
-    });
-}
+// Catch-all SPA routing fallback (runs AFTER all API and SEO routes)
+app.use(async (req, res) => {
+    if (req.path.startsWith('/api')) {
+        return res.status(404).json({ message: 'API endpoint not found' });
+    }
+    if (req.method !== 'GET') {
+        return res.status(404).send('Not Found');
+    }
+    try {
+        const baseHtml = await getBaseIndexHtml();
+        res.header('Content-Type', 'text/html; charset=utf-8');
+        res.send(baseHtml);
+    } catch (err) {
+        res.status(404).send('Page Not Found');
+    }
+});
 
 app.listen(PORT, () => {
     console.log(`🚀 Server running on http://localhost:${PORT}`);
