@@ -78,7 +78,7 @@ const Footer = () => {
                         {/* Brand Section */}
                         <div className="space-y-8">
                             <Link to="/" className="inline-block hover:scale-105 transition-transform">
-                                <img src={optimizeImage(logo, 300)} alt="Anandamoyee India" width="200" height="60" loading="lazy" className="h-20 md:h-24 w-auto" style={{ aspectRatio: '200/60' }} />
+                                <img src={optimizeImage(logo, 200)} alt="Anandamoyee India" width="186" height="170" loading="lazy" className="h-20 md:h-24 w-auto" style={{ aspectRatio: '186/170' }} />
                             </Link>
                             <p className="text-white/70 text-sm font-medium leading-relaxed max-w-sm">
                                 Leading the way in rice mill machinery innovation. We empower farmers and millers with state-of-the-art technology for a sustainable future.
