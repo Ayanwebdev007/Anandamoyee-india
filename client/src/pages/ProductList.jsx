@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
 import SEO from '../components/SEO';
+import { optimizeImage } from '../utils/imageOptimizer';
 
 const ProductList = () => {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -169,8 +170,11 @@ const ProductList = () => {
                                     <swiper-slide key={index}>
                                         <div className="rounded-lg shadow-md overflow-hidden h-48 relative bg-gray-200">
                                             <img
-                                                src={bannerUrl}
+                                                src={optimizeImage(bannerUrl, 800)}
                                                 alt={`${selectedCategory} Banner ${index + 1}`}
+                                                fetchpriority={index === 0 ? "high" : "auto"}
+                                                width="800"
+                                                height="400"
                                                 className="w-full h-full object-cover"
                                             />
                                         </div>
@@ -184,8 +188,11 @@ const ProductList = () => {
                             {currentCategoryData.banners.slice(0, 2).map((bannerUrl, index) => (
                                 <div key={index} className="rounded-lg shadow-md overflow-hidden h-64 relative bg-gray-200 group">
                                     <img
-                                        src={bannerUrl}
+                                        src={optimizeImage(bannerUrl, 1000)}
                                         alt={`${selectedCategory} Banner ${index + 1}`}
+                                        fetchpriority={index === 0 ? "high" : "auto"}
+                                        width="1000"
+                                        height="500"
                                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                     />
                                 </div>

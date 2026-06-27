@@ -243,7 +243,7 @@ const Home = () => {
                         >
                             <div className="h-20 w-20 md:h-32 md:w-32 bg-white rounded-full border border-gray-100 flex items-center justify-center mb-3 md:mb-4 shadow-sm overflow-hidden group-hover:shadow-md group-hover:border-primary/20 transition-all duration-300">
                                 {cat.image ? (
-                                    <img src={cat.image} alt={cat.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                    <img src={optimizeImage(cat.image, 250)} alt={cat.name} loading="lazy" width="128" height="128" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                                 ) : (
                                     <span className="text-xl md:text-3xl font-bold text-primary">{cat.name.charAt(0)}</span>
                                 )}

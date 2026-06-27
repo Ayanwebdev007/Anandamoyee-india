@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import logo from '../assets/ai logo new.png';
 import mii from '../assets/mii.png';
+import { optimizeImage } from '../utils/imageOptimizer';
 
 const Footer = () => {
     const trustBenefits = [
@@ -77,7 +78,7 @@ const Footer = () => {
                         {/* Brand Section */}
                         <div className="space-y-8">
                             <Link to="/" className="inline-block hover:scale-105 transition-transform">
-                                <img src={logo} alt="Anandamoyee India" className="h-20 md:h-24 w-auto" />
+                                <img src={optimizeImage(logo, 300)} alt="Anandamoyee India" width="200" height="60" loading="lazy" className="h-20 md:h-24 w-auto" />
                             </Link>
                             <p className="text-white/70 text-sm font-medium leading-relaxed max-w-sm">
                                 Leading the way in rice mill machinery innovation. We empower farmers and millers with state-of-the-art technology for a sustainable future.
@@ -129,8 +130,11 @@ const Footer = () => {
                             </h3>
                             <div className="group relative overflow-hidden rounded-2xl bg-white/5 p-4 border border-white/5 hover:border-primary/30 transition-all duration-500">
                                 <img
-                                    src={mii}
+                                    src={optimizeImage(mii, 400)}
                                     alt="Make in India"
+                                    width="180"
+                                    height="180"
+                                    loading="lazy"
                                     className="w-full max-w-[180px] h-auto object-contain brightness-110 contrast-110 hover:scale-110 transition-transform duration-700"
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
