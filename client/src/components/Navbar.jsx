@@ -153,9 +153,9 @@ const Navbar = () => {
                             <button className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
                                 <Menu className="h-6 w-6" />
                             </button>
-                            <Link to="/" className="flex items-center gap-2">
-                                <img src={optimizeImage(logo, 160)} alt="Anandamoyee India Logo" width="153" height="48" className="h-10 md:h-12 w-auto object-contain" style={{ aspectRatio: '153/48' }} />
-                                <span className="text-lg md:text-2xl font-bold tracking-tighter uppercase text-brand-blue">Anandamoyee India</span>
+                            <Link to="/" className="flex items-center gap-1.5 sm:gap-2">
+                                <img src={optimizeImage(logo, 160)} alt="Anandamoyee India Logo" width="44" height="40" className="h-9 md:h-12 w-auto object-contain flex-shrink-0" style={{ aspectRatio: '186/170' }} />
+                                <span className="text-sm sm:text-lg md:text-2xl font-bold tracking-tighter uppercase text-brand-blue whitespace-nowrap">Anandamoyee India</span>
                             </Link>
                         </div>
 
@@ -228,8 +228,8 @@ const Navbar = () => {
                         {/* Drawer Header */}
                         <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-primary">
                             <div className="flex items-center gap-2">
-                                <img src={optimizeImage(logo, 110)} alt="Logo" width="102" height="32" className="h-8 w-auto" style={{ aspectRatio: '102/32' }} />
-                                <span className="text-lg font-bold tracking-tight text-brand-blue">Anandamoyee</span>
+                                <img src={optimizeImage(logo, 110)} alt="Logo" width="35" height="32" className="h-8 w-auto flex-shrink-0" style={{ aspectRatio: '186/170' }} />
+                                <span className="text-lg font-bold tracking-tight text-brand-blue whitespace-nowrap">Anandamoyee</span>
                             </div>
                             <button
                                 onClick={() => setIsMenuOpen(false)}
