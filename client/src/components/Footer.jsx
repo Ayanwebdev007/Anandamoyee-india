@@ -50,7 +50,7 @@ const Footer = () => {
     ];
 
     return (
-        <footer className="relative mt-auto" style={{ contentVisibility: 'auto', containIntrinsicSize: '0 800px' }}>
+        <footer className="relative mt-auto">
             {/* Trust Benefits Section - Premium Yellow */}
             <div className="bg-primary py-12 md:py-16 border-t-8 border-black/5">
                 <div className="container mx-auto px-4">
