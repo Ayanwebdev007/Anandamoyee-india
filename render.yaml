@@ -46,10 +46,23 @@ services:
       - type: rewrite
         source: /api/*
         destination: https://anandamoyee-backend.onrender.com/api/*
-      # Proxy uploads to backend (if any local storage remained)
+      # Proxy uploads to backend
       - type: rewrite
         source: /uploads/*
         destination: https://anandamoyee-backend.onrender.com/uploads/*
+      # Proxy SEO pages to backend for dynamic prerendering
+      - type: rewrite
+        source: /product/*
+        destination: https://anandamoyee-backend.onrender.com/product/*
+      - type: rewrite
+        source: /products
+        destination: https://anandamoyee-backend.onrender.com/products
+      - type: rewrite
+        source: /about
+        destination: https://anandamoyee-backend.onrender.com/about
+      - type: rewrite
+        source: /contact
+        destination: https://anandamoyee-backend.onrender.com/contact
       # SPA routing fallback
       - type: rewrite
         source: /*

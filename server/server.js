@@ -772,14 +772,170 @@ app.post('/api/settings/whatsapp/test', async (req, res) => {
     }
 });
 
-// Dynamic Sitemap Route
+// --- GOD LEVEL DYNAMIC SEO PRERENDERING ---
+let cachedIndexHtml = null;
+let lastCacheTime = 0;
+
+async function getBaseIndexHtml() {
+    const now = Date.now();
+    if (cachedIndexHtml && (now - lastCacheTime < 5 * 60 * 1000)) {
+        return cachedIndexHtml;
+    }
+    const distPath = path.join(__dirname, '../client/dist/index.html');
+    if (fs.existsSync(distPath)) {
+        cachedIndexHtml = fs.readFileSync(distPath, 'utf8');
+        lastCacheTime = now;
+        return cachedIndexHtml;
+    }
+    const devPath = path.join(__dirname, '../client/index.html');
+    if (fs.existsSync(devPath)) {
+        cachedIndexHtml = fs.readFileSync(devPath, 'utf8');
+        lastCacheTime = now;
+        return cachedIndexHtml;
+    }
+    try {
+        const response = await fetch('https://www.anandamoyeeindia.com/index.html');
+        if (response.ok) {
+            cachedIndexHtml = await response.text();
+            lastCacheTime = now;
+            return cachedIndexHtml;
+        }
+    } catch (err) {
+        console.error('Error fetching base index.html:', err);
+    }
+    return `<!doctype html><html lang="en"><head><meta charset="UTF-8" /><title>Anandamoyee India</title></head><body><div id="root"></div></body></html>`;
+}
+
+function injectSeoIntoHtml(html, { title, description, keywords, image, url, schema, semanticHtml }) {
+    let modified = html;
+    const siteTitle = 'Anandamoyee India';
+    const fullTitle = title ? (title.includes(siteTitle) ? title : `${title} | ${siteTitle}`) : siteTitle;
+    const desc = description || 'Leading the way in rice mill machinery innovation. We empower farmers and millers with state-of-the-art technology for a sustainable future.';
+    const img = image || 'https://www.anandamoyeeindia.com/logo.png';
+    const fullUrl = url ? `https://www.anandamoyeeindia.com${url}` : 'https://www.anandamoyeeindia.com';
+
+    if (modified.includes('<title>')) {
+        modified = modified.replace(/<title>.*?<\/title>/s, `<title>${fullTitle}</title>`);
+    } else {
+        modified = modified.replace('</head>', `<title>${fullTitle}</title>\n</head>`);
+    }
+
+    if (modified.includes('name="description"')) {
+        modified = modified.replace(/<meta\s+name="description"\s+content="[^"]*"\s*\/>/i, `<meta name="description" content="${desc}" />`);
+    } else {
+        modified = modified.replace('</head>', `<meta name="description" content="${desc}" />\n</head>`);
+    }
+
+    const kwString = Array.isArray(keywords) ? keywords.join(', ') : keywords;
+    const kwMeta = kwString ? `<meta name="keywords" content="${kwString}" />` : '';
+
+    const ogTags = `
+    ${kwMeta}
+    <meta property="og:type" content="product" />
+    <meta property="og:title" content="${fullTitle}" />
+    <meta property="og:description" content="${desc}" />
+    <meta property="og:image" content="${img}" />
+    <meta property="og:url" content="${fullUrl}" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="${fullTitle}" />
+    <meta name="twitter:description" content="${desc}" />
+    <meta name="twitter:image" content="${img}" />
+    <link rel="canonical" href="${fullUrl}" />
+    ${schema ? `<script type="application/ld+json">${JSON.stringify(schema)}</script>` : ''}
+    `;
+    modified = modified.replace('</head>', `${ogTags}\n</head>`);
+
+    if (semanticHtml) {
+        const hiddenContainer = `<div id="seo-prerender" style="position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden;">${semanticHtml}</div>`;
+        modified = modified.replace(/<body[^>]*>/i, `$&${hiddenContainer}`);
+    }
+
+    return modified;
+}
+
+app.get('/product/:id', async (req, res) => {
+    try {
+        const product = await Product.findById(req.params.id);
+        const baseHtml = await getBaseIndexHtml();
+        if (!product) {
+            return res.send(baseHtml);
+        }
+        const schema = {
+            "@context": "https://schema.org/",
+            "@type": "Product",
+            "name": product.name,
+            "image": [product.image, ...(product.images || [])].filter(Boolean),
+            "description": product.description || `${product.name} available at Anandamoyee India.`,
+            "sku": product.modelNumber || product._id,
+            "brand": { "@type": "Brand", "name": "Anandamoyee India" },
+            "offers": {
+                "@type": "Offer",
+                "url": `https://www.anandamoyeeindia.com/product/${product._id}`,
+                "priceCurrency": "INR",
+                "price": product.price,
+                "availability": "https://schema.org/InStock",
+                "itemCondition": "https://schema.org/NewCondition"
+            }
+        };
+        const semanticHtml = `
+            <h1>${product.name}</h1>
+            <p>Category: ${product.category}</p>
+            <p>Model Number: ${product.modelNumber || 'N/A'}</p>
+            <p>Price: ₹${product.price} (Original Price: ₹${product.originalPrice || product.price})</p>
+            <p>Description: ${product.description}</p>
+            <p>Keywords: ${(product.keywords || []).join(', ')}</p>
+        `;
+        const html = injectSeoIntoHtml(baseHtml, {
+            title: product.name,
+            description: product.description?.substring(0, 160) || `${product.name} - high quality rice mill machinery by Anandamoyee India.`,
+            keywords: product.keywords,
+            image: product.image,
+            url: `/product/${product._id}`,
+            schema,
+            semanticHtml
+        });
+        res.header('Content-Type', 'text/html; charset=utf-8');
+        res.send(html);
+    } catch (err) {
+        console.error('SEO prerender error for product:', err);
+        const baseHtml = await getBaseIndexHtml();
+        res.send(baseHtml);
+    }
+});
+
+app.get(['/products', '/about', '/contact'], async (req, res) => {
+    try {
+        const baseHtml = await getBaseIndexHtml();
+        let title = 'Products | Anandamoyee India';
+        let description = 'Explore our complete range of rice mill machines, polishers, pulverizers, paddy threshers, and spare parts.';
+        if (req.path.includes('/about')) {
+            title = 'About Us | Anandamoyee India';
+            description = 'Learn about Anandamoyee India, leading pioneer in manufacturing state-of-the-art agricultural and rice milling machinery.';
+        } else if (req.path.includes('/contact')) {
+            title = 'Contact Us | Anandamoyee India';
+            description = 'Get in touch with Anandamoyee India for sales inquiries, spare parts, dealership, or customer support.';
+        }
+        const html = injectSeoIntoHtml(baseHtml, {
+            title,
+            description,
+            url: req.path
+        });
+        res.header('Content-Type', 'text/html; charset=utf-8');
+        res.send(html);
+    } catch (err) {
+        const baseHtml = await getBaseIndexHtml();
+        res.send(baseHtml);
+    }
+});
+
+// Dynamic God Level XML Sitemap Route
 app.get('/api/sitemap.xml', async (req, res) => {
     try {
-        const products = await Product.find().select('_id updatedAt');
+        const products = await Product.find().select('_id name image updatedAt');
         const baseUrl = 'https://www.anandamoyeeindia.com';
         
         let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
-        xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+        xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">\n';
         
         // Add home page
         xml += '  <url>\n';
@@ -788,14 +944,17 @@ app.get('/api/sitemap.xml', async (req, res) => {
         xml += '    <priority>1.0</priority>\n';
         xml += '  </url>\n';
 
-        // Add products page
-        xml += '  <url>\n';
-        xml += `    <loc>${baseUrl}/products</loc>\n`;
-        xml += '    <changefreq>daily</changefreq>\n';
-        xml += '    <priority>0.9</priority>\n';
-        xml += '  </url>\n';
+        // Add static pages
+        const staticPages = ['products', 'about', 'contact'];
+        for (const page of staticPages) {
+            xml += '  <url>\n';
+            xml += `    <loc>${baseUrl}/${page}</loc>\n`;
+            xml += '    <changefreq>daily</changefreq>\n';
+            xml += '    <priority>0.9</priority>\n';
+            xml += '  </url>\n';
+        }
 
-        // Add individual products
+        // Add individual products with image tags
         for (const product of products) {
             xml += '  <url>\n';
             xml += `    <loc>${baseUrl}/product/${product._id}</loc>\n`;
@@ -804,6 +963,15 @@ app.get('/api/sitemap.xml', async (req, res) => {
             }
             xml += '    <changefreq>weekly</changefreq>\n';
             xml += '    <priority>0.8</priority>\n';
+            if (product.image) {
+                xml += '    <image:image>\n';
+                xml += `      <image:loc>${product.image}</image:loc>\n`;
+                if (product.name) {
+                    const cleanName = product.name.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+                    xml += `      <image:title>${cleanName}</image:title>\n`;
+                }
+                xml += '    </image:image>\n';
+            }
             xml += '  </url>\n';
         }
 
@@ -829,12 +997,66 @@ app.post('/api/products/seed', async (req, res) => {
         ];
 
         const mockProducts = [
-            { name: "Rice Mill Screen 1mm", price: 1200, originalPrice: 1500, category: "Spare Parts", image: "Screen 1" },
-            { name: "6N40 Rice Polisher", price: 45000, originalPrice: 52000, category: "Rice Mill Machines", image: "Polisher" },
-            { name: "Heavy Duty Pulverizer", price: 28000, originalPrice: 32000, category: "Pulverizer Machines", image: "Pulverizer" },
-            { name: "Chaff Cutter Blade set", price: 850, originalPrice: 1200, category: "Spare Parts", image: "Blade" },
-            { name: "Digital Paddy Thresher", price: 62000, originalPrice: 68000, category: "Paddy Thresher", image: "Thresher" },
-            { name: "Rubber Roll 10 inch", price: 4200, originalPrice: 5000, category: "Spare Parts", image: "Rubber Roll" },
+            { 
+                name: "6B70 Rice Mill Jali (Screen Mesh 1mm)", 
+                price: 1200, 
+                originalPrice: 1500, 
+                category: "Spare Parts", 
+                image: "https://placehold.co/600x600/png?text=6B70+Jali",
+                modelNumber: "6B70-JALI-1MM",
+                description: "Premium stainless steel heat-treated 6B70 Rice Mill Jali screen mesh (1mm). Precision punched holes for maximum polishing efficiency and minimal rice breakage. Compatible with standard 6B70 huller and polisher machines across India.",
+                keywords: ["6b70", "jali", "6b70 jali", "rice mill screen", "mesh", "sieve", "huller screen", "6n40 jali", "spare parts"]
+            },
+            { 
+                name: "6N40 Mini Rice Mill Polisher Machine with Jali", 
+                price: 45000, 
+                originalPrice: 52000, 
+                category: "Rice Mill Machines", 
+                image: "https://placehold.co/600x600/png?text=6N40+Polisher",
+                modelNumber: "6N40-POLISHER",
+                description: "High performance 6N40 combined rice milling and polishing machine equipped with heavy duty iron huller and hardened screen jali. Ideal for commercial agricultural use.",
+                keywords: ["6n40", "6n40 polisher", "mini rice mill", "rice polisher machine", "6n40 jali", "huller machine"]
+            },
+            { 
+                name: "Heavy Duty Commercial Pulverizer Machine 3HP", 
+                price: 28000, 
+                originalPrice: 32000, 
+                category: "Pulverizer Machines", 
+                image: "https://placehold.co/600x600/png?text=Pulverizer+3HP",
+                modelNumber: "PULV-3HP-COMM",
+                description: "Commercial grade 3HP masala and wheat pulverizer grinding machine with stainless steel rotor and heavy duty jali screens for ultrafine flour milling.",
+                keywords: ["pulverizer", "flour mill", "masala grinding machine", "3hp pulverizer", "pulverizer jali"]
+            },
+            { 
+                name: "Chaff Cutter High Carbon Steel Blade Set", 
+                price: 850, 
+                originalPrice: 1200, 
+                category: "Spare Parts", 
+                image: "https://placehold.co/600x600/png?text=Chaff+Cutter+Blade",
+                modelNumber: "CC-BLADE-SET",
+                description: "Heat-treated high carbon tempered alloy steel blade set for chaff cutter machines. Ensures clean cutting of animal fodder and long-lasting sharpness.",
+                keywords: ["chaff cutter blade", "fodder cutter spare parts", "agricultural blades", "chaff cutter"]
+            },
+            { 
+                name: "Digital Automatic Paddy Thresher Machine", 
+                price: 62000, 
+                originalPrice: 68000, 
+                category: "Paddy Thresher", 
+                image: "https://placehold.co/600x600/png?text=Paddy+Thresher",
+                modelNumber: "PT-DIGI-500",
+                description: "High output tractor and motor operated automatic digital paddy thresher machine with multi-crop screening and grain cleaning blower system.",
+                keywords: ["paddy thresher", "multicrop thresher", "rice thresher machine", "agricultural machinery"]
+            },
+            { 
+                name: "Rubber Roll 10 Inch for Rice Dehusker", 
+                price: 4200, 
+                originalPrice: 5000, 
+                category: "Spare Parts", 
+                image: "https://placehold.co/600x600/png?text=Rubber+Roll+10in",
+                modelNumber: "RR-10INCH",
+                description: "Premium wear-resistant synthetic rubber rolls (10 inch x 10 inch) for rice huller and dehusker machines. High shelling efficiency with optimum heat dissipation.",
+                keywords: ["rubber roll", "10 inch rubber roll", "rice dehusker roll", "rice mill rubber roller", "spare parts"]
+            }
         ];
 
         await Category.deleteMany({});
@@ -848,6 +1070,27 @@ app.post('/api/products/seed', async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 });
+
+// --- HOSTINGER VPS / MONOLITHIC STATIC SERVING & SPA FALLBACK ---
+const clientDistPath = path.join(__dirname, '../client/dist');
+if (fs.existsSync(clientDistPath)) {
+    // Serve static files (CSS, JS, images) from client/dist
+    app.use(express.static(clientDistPath));
+
+    // Catch-all SPA routing fallback (runs AFTER all API and SEO routes)
+    app.get('*', async (req, res) => {
+        if (req.path.startsWith('/api')) {
+            return res.status(404).json({ message: 'API endpoint not found' });
+        }
+        try {
+            const baseHtml = await getBaseIndexHtml();
+            res.header('Content-Type', 'text/html; charset=utf-8');
+            res.send(baseHtml);
+        } catch (err) {
+            res.sendFile(path.join(clientDistPath, 'index.html'));
+        }
+    });
+}
 
 app.listen(PORT, () => {
     console.log(`🚀 Server running on http://localhost:${PORT}`);

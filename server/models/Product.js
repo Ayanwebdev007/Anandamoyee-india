@@ -44,7 +44,11 @@ const productSchema = new mongoose.Schema({
     }],
     images: [{
         type: String
-    }]
+    }],
+    keywords: {
+        type: [String],
+        default: []
+    }
 }, {
     timestamps: true
 });

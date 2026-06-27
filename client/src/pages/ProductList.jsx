@@ -90,8 +90,11 @@ const ProductList = () => {
         if (searchQuery.trim()) {
             const query = searchQuery.toLowerCase();
             result = result.filter(p =>
-                p.name.toLowerCase().includes(query) ||
-                p.category.toLowerCase().includes(query)
+                (p.name && p.name.toLowerCase().includes(query)) ||
+                (p.category && p.category.toLowerCase().includes(query)) ||
+                (p.description && p.description.toLowerCase().includes(query)) ||
+                (p.modelNumber && p.modelNumber.toLowerCase().includes(query)) ||
+                (Array.isArray(p.keywords) && p.keywords.some(kw => kw.toLowerCase().includes(query)))
             );
         }
 

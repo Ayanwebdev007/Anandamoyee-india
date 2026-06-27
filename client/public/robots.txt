@@ -1,7 +1,19 @@
 User-agent: *
 Allow: /
+Allow: /product/
+Allow: /products
+Allow: /api/sitemap.xml
 Disallow: /admin/
 Disallow: /cart
 Disallow: /profile
+Disallow: /checkout
+Disallow: /che
+
+User-agent: Googlebot
+Allow: /
+Disallow: /admin/
+Disallow: /cart
+Disallow: /profile
+Disallow: /checkout
 
 Sitemap: https://www.anandamoyeeindia.com/api/sitemap.xml
